@@ -43,8 +43,7 @@ int MainWnd::DivPlayerRect(const CRect &playerrect, RECTARR &rectlst)
 
 	CRect _stock;
 	CRect b;
-#define W (playerrect.Width())
-#define H (playerrect.Height())
+
 #define OFFSET b.OffsetRect(playerrect.TopLeft())
 #define SETRECT(x) b.left = W * vline_##x##left;b.right = W * vline_##x##right;b.top = H * hline_##x##top;b.bottom = H * hline_##x##bottom;OFFSET;
 #define SETRECTPUSH(x) SETRECT(x) rectlst.push_back(b);
