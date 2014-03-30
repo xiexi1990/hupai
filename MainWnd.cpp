@@ -320,12 +320,3 @@ void MainWnd::OnRButtonDblClk(UINT nFlags, CPoint point)
 	OnRButtonDown(nFlags, point);
 }
 
-CRect MainWnd::_setRect(const CRect &whole, double rl, double rt, double rr, double rb)
-{
-	CRect r;
-	r.left = whole.left + whole.Width() * rl;
-	r.top = whole.top + whole.Height() * rt;
-	r.right = whole.left + whole.Width() * rr;
-	r.bottom = whole.top + whole.Height() * rb;
-	return r;
-}

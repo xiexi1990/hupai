@@ -2,6 +2,48 @@
 #include "MainWnd.h"
 
 
+CRect _setRect(const CRect &whole, double rl, double rt, double rr, double rb)
+{
+	CRect r;
+	r.left = whole.left + whole.Width() * rl;
+	r.top = whole.top + whole.Height() * rt;
+	r.right = whole.left + whole.Width() * rr;
+	r.bottom = whole.top + whole.Height() * rb;
+	return r;
+}
+
+CRect _getAlignRect(const CRect& whole, int x, int y, int align)
+{
+	CRect r;
+	if((align & _ALIGNLEFT) == (align & _ALIGNRIGHT)){
+		r.left = whole.left + (whole.Width() - x) / 2;
+	}
+	else if(align & _ALIGNLEFT){
+		r.left = whole.left;
+	}
+	else{
+		r.left = whole.right - x;
+	}
+
+	if((align & _ALIGNTOP) == (align & _ALIGNBOTTOM)){
+		r.top = whole.top + (whole.Height() - y) / 2;
+	}
+	else if(align & _ALIGNTOP){
+		r.top = whole.top;
+	}
+	else{
+		r.top = whole.bottom - y;
+	}
+	r.right = r.left + x;
+	r.bottom = r.top + y;
+	return r;
+}
+
+CRect _getCenterRect(const CRect& whole, int x, int y)
+{
+	return _getAlignRect(whole, x, y, 0);
+}
+
 int MainWnd::DivWhole(const CRect &whole, int num, RECTARR &rectlst)
 {
 	if(num == 3 || num == 4){

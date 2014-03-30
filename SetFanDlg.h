@@ -13,7 +13,7 @@ public:
 	virtual ~SetFanDlg();
 
 // Dialog Data
-	enum { IDD = IDD_DIALOG1 };
+	enum { IDD = IDD_SETFAN_DIALOG };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -22,5 +22,7 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnStnClickedStatic2();
-	CButton m_BtnBase;
+	
+	CButton m_BtnHuType[4];
+	CRichEditCtrl m_RichPlayerAppend[4], m_RichScore[4];
 };

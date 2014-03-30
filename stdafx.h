@@ -37,7 +37,13 @@
 #include<process.h>
 #include<vector>
 
-
+CRect _setRect(const CRect& whole, double rl, double rt, double rr, double rb);
+CRect _getCenterRect(const CRect& whole, int x, int y);
+#define _ALIGNLEFT 1
+#define _ALIGNRIGHT 2
+#define _ALIGNTOP 4
+#define _ALIGNBOTTOM 8
+CRect _getAlignRect(const CRect& whole, int x, int y, int align);
 
 
 #ifdef _UNICODE

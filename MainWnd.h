@@ -77,7 +77,6 @@ public:
 protected:
 	void GetPointAt(const CPoint& point, int& at, int& innerat);
 	static int DivWhole(const CRect& whole, int num, RECTARR& rectlst);
-	static CRect _setRect(const CRect& whole, double rl, double rt, double rr, double rb);
 	static int DivPlayerRect(const CRect& playerrect, RECTARR& rectlst);
 
 	DECLARE_MESSAGE_MAP()

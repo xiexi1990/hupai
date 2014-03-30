@@ -19,6 +19,7 @@ class ChupaiApp : public CWinApp
 public:
 	ChupaiApp();
 
+	CFont m_Font18;
 // Overrides
 	public:
 	virtual BOOL InitInstance();
