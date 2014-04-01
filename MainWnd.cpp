@@ -232,7 +232,7 @@ void MainWnd::OnLButtonUp(UINT nFlags, CPoint point)
 				this->m_PlayersInfo[at].m_MenQing ^= 1;
 			}
 			else{
-				SetFanDlg dlg;
+				SetFanDlg dlg(this);
 				dlg.DoModal();
 				m_CurStat.m_FirstClick = at;
 			}

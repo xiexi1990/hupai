@@ -4,7 +4,7 @@
 // MainWnd
 
 class ChupaiDlg;
-typedef std::vector<CRect> RECTARR;
+
 
 struct PlayerInfo
 {

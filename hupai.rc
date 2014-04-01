@@ -116,7 +116,10 @@ END
 // Bitmap
 //
 
-IDB_BITMAP1             BITMAP                  "res\\win_base ¿½±´.bmp"
+IDB_BITMAP_WINQINGPENG  BITMAP                  "res\\win_qingpeng3.bmp"
+IDB_BITMAP_WINBASE      BITMAP                  "res\\win_base3.bmp"
+IDB_BITMAP_WINPENG      BITMAP                  "res\\win_pengpeng3.bmp"
+IDB_BITMAP_WINQING      BITMAP                  "res\\win_qing3.bmp"
 #endif    // Chinese (P.R.C.) resources
 /////////////////////////////////////////////////////////////////////////////
 

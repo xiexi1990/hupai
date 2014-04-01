@@ -37,6 +37,9 @@
 #include<process.h>
 #include<vector>
 
+typedef std::vector<CRect> RECTARR;
+typedef std::vector<int> INTARR;
+
 CRect _setRect(const CRect& whole, double rl, double rt, double rr, double rb);
 CRect _getCenterRect(const CRect& whole, int x, int y);
 #define _ALIGNLEFT 1

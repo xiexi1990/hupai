@@ -112,6 +112,70 @@ void ChupaiDlg::OnOK()
 //	ReleaseMutex(this->m_pMainWnd->m_hMutexLetGo);
 }
 
+void ChupaiDlg::_GetLayout(const CRect& whole, RECTARR& rectlst, INTARR& idlst)
+{
+	idlst.clear();
+	_GetLayout(whole, rectlst);
+	idlst.push_back(1); /// mainwnd
+	idlst.push_back(IDC_STATIC_NUMPLAYERS);
+	idlst.push_back(IDC_RICHEDIT_NUMPLAYERS);
+	idlst.push_back(IDC_BUTTON_SET);
+	idlst.push_back(IDC_STATIC_HURCD);
+	idlst.push_back(IDC_LIST_HURCD);
+	idlst.push_back(IDC_STATIC_MSGRCD);
+	idlst.push_back(IDC_RICHEDIT_MSGRCD);
+}
+
+void ChupaiDlg::_GetLayout(const CRect& whole, RECTARR& rectlst)
+{
+	rectlst.clear();
+	int margin = 10;
+	CRect ir, mainwndrect, tmp;
+	ir.SetRect(whole.left + margin, whole.top + margin, whole.right - margin, whole.bottom - margin);
+
+	rectlst.push_back(mainwndrect = _setRect(ir, 0, 0, 0.85, 1));  /// mainwnd
+	
+	////redefine tmp {
+	tmp.left = mainwndrect.right + 2;
+	tmp.top = ir.top;
+	tmp.right = tmp.left + 30;
+	tmp.bottom = tmp.top + 30;
+	rectlst.push_back(_getCenterRect(tmp, 24, 14)); /// IDC_STATIC_NUMPLAYERS
+
+	tmp.left = tmp.right + ir.Width()*0.01;
+	tmp.right = ir.right - 60;
+	if(tmp.Width() < 30)
+		tmp.right = tmp.left + 30;
+	rectlst.push_back(tmp); /// IDC_RICHEDIT_NUMPLAYERS
+
+	tmp.left = tmp.right + 4;
+	tmp.right = ir.right;
+	rectlst.push_back(tmp); /// IDC_BUTTON_SET
+
+	//// } tmp
+
+	////redefine tmp {
+	tmp.left = mainwndrect.right + ir.Width()*0.01;
+	tmp.right = ir.right;
+	tmp.top = ir.top + 120;
+	tmp.bottom = tmp.top + 16;
+	rectlst.push_back(_getAlignRect(tmp, 48, 14, _ALIGNLEFT | _ALIGNTOP)); /// IDC_STATIC_HURCD
+
+	tmp.top = tmp.bottom;
+	tmp.bottom = tmp.top + (ir.bottom - tmp.top - 20) / 2;
+	rectlst.push_back(tmp); /// IDC_LIST_HURCD
+
+	tmp.top = tmp.bottom + 4;
+	tmp.bottom = tmp.top + 16;
+	rectlst.push_back(_getAlignRect(tmp, 48, 14, _ALIGNLEFT | _ALIGNTOP)); /// IDC_STATIC_MSGRCD
+
+	tmp.top = tmp.bottom;
+	tmp.bottom = ir.bottom;
+	rectlst.push_back(tmp);  /// IDC_RICHEDIT_MSGRCD
+
+	//// } tmp
+}
+
 void ChupaiDlg::OnSize(UINT nType, int cx, int cy)
 {
 //	CDialog::OnSize(nType, cx, cy);
@@ -119,52 +183,16 @@ void ChupaiDlg::OnSize(UINT nType, int cx, int cy)
 	if(m_Inited == 0)
 		return;
 	if(nType != SIZE_MINIMIZED){
-		int margin = 10;
-		CRect ir, mainwndrect, tmp;
-		ir.SetRect(margin, margin, cx - margin, cy - margin);
+		CRect r(0, 0, cx, cy);
+		INTARR idlst;
+		RECTARR rectlst;
+		_GetLayout(r, rectlst, idlst);
 		if(m_pMainWnd && IsWindow(m_pMainWnd->m_hWnd)){
-			this->m_pMainWnd->MoveWindow(&(mainwndrect = _setRect(ir, 0, 0, 0.85, 1)), false);
+			this->m_pMainWnd->MoveWindow(&rectlst[0], false);
 		}
-
-		////redefine tmp {
-		tmp.left = mainwndrect.right + 2;
-		tmp.top = ir.top;
-		tmp.right = tmp.left + 30;
-		tmp.bottom = tmp.top + 30;
-		
-		GetDlgItem(IDC_STATIC_NUMPLAYERS)->MoveWindow(&_getCenterRect(tmp, 24, 14), false);
-
-		tmp.left = tmp.right + ir.Width()*0.01;
-		tmp.right = ir.right - 60;
-		if(tmp.Width() < 30)
-			tmp.right = tmp.left + 30;
-		GetDlgItem(IDC_RICHEDIT_NUMPLAYERS)->MoveWindow(&tmp, false);
-
-		tmp.left = tmp.right + 4;
-		tmp.right = ir.right;
-		GetDlgItem(IDC_BUTTON_SET)->MoveWindow(&tmp, false);
-		//// } tmp
-
-		////redefine tmp {
-		tmp.left = mainwndrect.right + ir.Width()*0.01;
-		tmp.right = ir.right;
-		tmp.top = ir.top + 120;
-		tmp.bottom = tmp.top + 16;
-		GetDlgItem(IDC_STATIC_HURCD)->MoveWindow(&_getAlignRect(tmp, 48, 14, _ALIGNLEFT | _ALIGNTOP), false);
-
-		tmp.top = tmp.bottom;
-		tmp.bottom = tmp.top + (ir.bottom - tmp.top - 20) / 2;
-		GetDlgItem(IDC_LIST_HURCD)->MoveWindow(&tmp, false);
-
-		tmp.top = tmp.bottom + 4;
-		tmp.bottom = tmp.top + 16;
-		GetDlgItem(IDC_STATIC_MSGRCD)->MoveWindow(&_getAlignRect(tmp, 48, 14, _ALIGNLEFT | _ALIGNTOP), false);
-
-		tmp.top = tmp.bottom;
-		tmp.bottom = ir.bottom;
-		GetDlgItem(IDC_RICHEDIT_MSGRCD)->MoveWindow(&tmp, false);
-
-		//// } tmp
+		for(int i = 1; i < idlst.size(); i++){
+			GetDlgItem(idlst[i])->MoveWindow(&rectlst[i], false);
+		}
 
 		Invalidate();
 	}

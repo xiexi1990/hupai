@@ -4,9 +4,12 @@
 //
 #define IDD_HUPAI_DIALOG                102
 #define IDR_MAINFRAME                   128
-#define IDB_BITMAP1                     131
-#define IDD_ENQFAN_DIALOG               132
 #define IDD_SETFAN_DIALOG               132
+#define IDB_BITMAP_WINQINGPENG          137
+#define IDB_BITMAP_WINBASE              138
+#define IDB_BITMAP_WINPENG              139
+#define IDB_BITMAP4                     140
+#define IDB_BITMAP_WINQING              140
 #define IDC_LIST_HURCD                  1006
 #define IDC_RICHEDIT_FINALFAN           1007
 #define IDC_RICHEDIT_NUMPLAYERS         1008
@@ -24,7 +27,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           101

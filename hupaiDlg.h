@@ -28,6 +28,9 @@ public:
 protected:
 	HICON m_hIcon;
 
+	void _GetLayout(const CRect& whole, RECTARR& rectlst);
+	void _GetLayout(const CRect& whole, RECTARR& rectlst, INTARR& idlst);
+
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
