@@ -24,13 +24,6 @@ ChupaiApp::ChupaiApp()
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
-	LOGFONT logfont;
-	memset(&logfont, 0, sizeof LOGFONT);
-	wcscpy(logfont.lfFaceName, L"ËÎÌו");
-	logfont.lfWeight = FW_HEAVY;
-	logfont.lfHeight = 18;
-	m_Font18.CreateFontIndirectW(&logfont);
-	
 }
 
 
@@ -55,7 +48,7 @@ BOOL ChupaiApp::InitInstance()
 
 	CWinApp::InitInstance();
 
-	AfxInitRichEdit();
+	AfxInitRichEdit2();
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size

@@ -29,5 +29,5 @@ public:
 	
 	CButton m_BtnHuType[4];
 	CRichEditCtrl m_RichPlayerAppend[4], m_RichScore[4];
-	CStatic m_PlayerName[4];
+	CStatic m_StaticPlayerName[4];
 };

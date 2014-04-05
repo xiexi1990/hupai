@@ -9,6 +9,8 @@
 
 #include "resource.h"		// main symbols
 
+#include "FontRepository.h"
+
 
 // ChupaiApp:
 // See hupai.cpp for the implementation of this class
@@ -19,7 +21,8 @@ class ChupaiApp : public CWinApp
 public:
 	ChupaiApp();
 
-	CFont m_Font18;
+//	CFont m_Font18, m_Font120;
+	FontRepository m_FontRepository;
 // Overrides
 	public:
 	virtual BOOL InitInstance();

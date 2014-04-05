@@ -53,7 +53,7 @@ BOOL ChupaiDlg::OnInitDialog()
 	GetDlgItem(IDC_BUTTON_SET)->SetWindowTextW(L"设定");
 	GetDlgItem(IDC_STATIC_HURCD)->SetWindowTextW(L"和牌记录");
 	GetDlgItem(IDC_STATIC_MSGRCD)->SetWindowTextW(L"消息记录");
-	GetDlgItem(IDC_RICHEDIT_NUMPLAYERS)->SetFont(&theApp.m_Font18, false);
+	GetDlgItem(IDC_RICHEDIT_NUMPLAYERS)->SetFont(theApp.m_FontRepository.AddGetHeight(18), false);
 
 	m_pMainWnd->CreateEx(0, NULL, NULL, WS_CHILD | WS_VISIBLE, r, this, 1);
 	m_pMainWnd->ShowWindow(SW_SHOW);
