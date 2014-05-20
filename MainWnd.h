@@ -5,6 +5,7 @@
 
 class ChupaiDlg;
 
+#define MAXPLAYER 4
 
 struct PlayerInfo
 {
@@ -23,15 +24,22 @@ struct PlayerInfo
 #define PENGHU 2
 #define QINGHU 4
 #define QINGPENGHU 8
+#define USERDEFHU 16
+#define SRL2BITHU(srl) ((srl)==0?BASEHU:((srl)==1?PENGHU:((srl)==2?QINGHU:((srl)==3?QINGPENGHU:(srl)==4?USERDEFHU:0))))
+#define BIT2SRLHU(bit) ((bit)==BASEHU?0:((bit)==PENGHU?1:((bit)==QINGHU?2:((bit)==QINGPENGHU?3:((bit)==USERDEFHU?4:5)))))
+#define BIT2STRHU(bit) ((bit)==BASEHU?L"基本和":((bit)==PENGHU?L"碰碰和":((bit)==QINGHU?L"清一色":((bit)==QINGPENGHU?L"清碰":((bit)==USERDEFHU?L"自定义":L"")))))
+#define SRL2STRHU(srl) BIT2STRHU(SRL2BITHU(srl))
+
 
 #define BASEFAN 1
 #define PENGFAN 4
 #define QINGFAN 6
 #define QINGPENGFAN 12
 
-#define DEFPLUSFAN 2
+#define PLUSFAN 2
 #define MINGFAN 1
 #define ANFAN 2
+#define MENZIFAN 1
 
 typedef std::vector<PlayerInfo> PLAYERINFOARR;
 
@@ -44,9 +52,10 @@ struct State
 class MainWnd : public CWnd
 {
 	DECLARE_DYNAMIC(MainWnd)
+private:  ///disable, no implementation
+	MainWnd();
 
 public:
-	MainWnd();
 	MainWnd(ChupaiDlg* pp);
 	virtual ~MainWnd();
 	static  unsigned int  KDraw(void *pp);
@@ -54,15 +63,16 @@ public:
 	HANDLE m_hMutexLetGo;
 	CRITICAL_SECTION m_csCheck, m_csCrit, m_csLoadData, m_csLoadImportantData;
 	bool m_kGoing, m_NeedRedraw, m_Released, m_FirstOnShow, m_NeedCalPlayerRects, m_LButtonDown, m_RButtonDown;
+	bool m_FastSet;
 	CWinThread *m_KDrawThread;
-//	int a;
+
 	CDC m_dcmCrit, m_dcmDraw1, m_dcmPreDraw;
 	CBitmap m_bmpCrit, m_bmpDraw1, m_bmpPreDraw;
 	CBitmap *m_defbmpCrit, *m_defbmpDraw1, *m_defbmpPreDraw;
 	int MAXX, MAXY;
 	CRect m_WndRect;
-	int m_NumPlayers;
-//	int m_CurrentAt;
+	int m_NumPlayers, m_TypeFan[4], m_PlusFan, m_MingFan, m_AnFan, m_MenZiFan;
+
 	State m_CurStat;
 	PLAYERINFOARR m_PlayersInfo;
 

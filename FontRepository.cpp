@@ -4,7 +4,7 @@
 FontRepository::FontRepository(void)
 {
 	memset(&m_LogFont, 0, sizeof LOGFONT);
-	wcscpy_s(m_LogFont.lfFaceName, L"ËÎÌו");
+	wcscpy_s(m_LogFont.lfFaceName, L"Arial");
 	m_LogFont.lfWeight = FW_HEAVY;
 }
 

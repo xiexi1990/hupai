@@ -16,11 +16,6 @@
 
 IMPLEMENT_DYNAMIC(MainWnd, CWnd)
 
-MainWnd::MainWnd()
-{
-	AfxMessageBox(L"you cant use MainWnd() !");
-	throw;
-}
 
 MainWnd::~MainWnd()
 {
@@ -36,6 +31,15 @@ MainWnd::MainWnd(ChupaiDlg* pp)
 	m_NeedCalPlayerRects = 0;
 	m_LButtonDown = 0;
 	m_RButtonDown = 0;
+	m_TypeFan[0] = BASEFAN;
+	m_TypeFan[1] = PENGFAN;
+	m_TypeFan[2] = QINGFAN;
+	m_TypeFan[3] = QINGPENGFAN;
+	m_PlusFan = PLUSFAN;
+	m_MingFan = MINGFAN;
+	m_AnFan = ANFAN;
+	m_FastSet = 0;
+	m_MenZiFan = MENZIFAN;
 }
 
 BEGIN_MESSAGE_MAP(MainWnd, CWnd)
@@ -92,7 +96,7 @@ void MainWnd::OnShowWindow(BOOL bShow, UINT nStatus)
 		for(int i = 0; i < m_NumPlayers; i++){
 			pinfo.m_Srl = i;
 			pinfo.m_Name = char('A'+i);
-			pinfo.m_Name = L"½âÎö";
+		//	pinfo.m_Name = L"½âÎö";
 			pinfo.m_Sum = 1000;
 			pinfo.m_DefFan = 0;
 			pinfo.m_MingGangCnt = pinfo.m_AnGangCnt = 0;
@@ -197,6 +201,8 @@ void MainWnd::OnLButtonUp(UINT nFlags, CPoint point)
 	m_LButtonDown = 0;
 	int at, innerat;
 	GetPointAt(point, at, innerat);
+	m_CurStat.m_At = at;
+	m_CurStat.m_InnerAt = innerat;
 	if(this->m_CurStat.m_FirstClick == -1){
 		if(at == -1){
 			return;
@@ -234,7 +240,7 @@ void MainWnd::OnLButtonUp(UINT nFlags, CPoint point)
 			else{
 				SetFanDlg dlg(this);
 				dlg.DoModal();
-				m_CurStat.m_FirstClick = at;
+		//		m_CurStat.m_FirstClick = at;
 			}
 		}
 	}

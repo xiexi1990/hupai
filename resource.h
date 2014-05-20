@@ -23,6 +23,7 @@
 #define IDC_STATIC_EQUAL                1016
 #define IDC_STATIC_PLUS                 1017
 #define IDC_CHECK1                      1018
+#define IDC_CHECK_FASTSET               1018
 
 // Next default values for new objects
 // 
