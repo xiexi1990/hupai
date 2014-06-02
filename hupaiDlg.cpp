@@ -23,6 +23,8 @@ ChupaiDlg::ChupaiDlg(CWnd* pParent /*=NULL*/)
 void ChupaiDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LISTCTRL_HURCD, m_ListCtrl_HuRcd);
+	DDX_Control(pDX, IDC_RICHEDIT_MSGRCD, m_RichEdit_MsgRcd);
 }
 
 BEGIN_MESSAGE_MAP(ChupaiDlg, CDialog)
@@ -30,6 +32,7 @@ BEGIN_MESSAGE_MAP(ChupaiDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_CHECK_FASTSETMAIN, &ChupaiDlg::OnBnClickedCheckFastsetmain)
 END_MESSAGE_MAP()
 
 
@@ -51,17 +54,35 @@ BOOL ChupaiDlg::OnInitDialog()
 	
 	GetDlgItem(IDC_STATIC_NUMPLAYERS)->SetWindowTextW(L"人数");
 	GetDlgItem(IDC_BUTTON_SET)->SetWindowTextW(L"设定");
+	GetDlgItem(IDC_STATIC_TIP1)->SetWindowTextW(L"右键点击玩家设定姓名");
+	GetDlgItem(IDC_CHECK_FASTSETMAIN)->SetWindowTextW(L"快速选择");
 	GetDlgItem(IDC_STATIC_HURCD)->SetWindowTextW(L"和牌记录");
 	GetDlgItem(IDC_STATIC_MSGRCD)->SetWindowTextW(L"消息记录");
 	GetDlgItem(IDC_RICHEDIT_NUMPLAYERS)->SetFont(theApp.m_FontRepository.AddGetHeight(18), false);
 
 	m_pMainWnd->CreateEx(0, NULL, NULL, WS_CHILD | WS_VISIBLE, r, this, 1);
 	m_pMainWnd->ShowWindow(SW_SHOW);
+
+	((CButton*)GetDlgItem(IDC_CHECK_FASTSETMAIN))->SetCheck(1);
+	m_pMainWnd->m_FastSet = 1;
+#if 0
+		CRect r(0, 0, 100, 100);
+		forward.Create(L"forward", WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, r, this, 11111);
+#endif
+	{
+		m_ListCtrl_HuRcd.SetExtendedStyle(m_ListCtrl_HuRcd.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+		CRect r;
+		this->m_ListCtrl_HuRcd.GetClientRect(&r);
+		m_ListCtrl_HuRcd.InsertColumn(0, L"", 0, 0);
+		for(int i = 0; i < m_pMainWnd->m_NumPlayers; i++){
+			m_ListCtrl_HuRcd.InsertColumn(i+1, m_pMainWnd->m_PlayersInfo[i].m_Name, LVCFMT_CENTER, r.Width()/m_pMainWnd->m_NumPlayers);
+		}
+	}
+
 	m_Inited = 1;
 	CRect clientrect;
 	this->GetClientRect(&clientrect);
 	this->OnSize(0, clientrect.Width(), clientrect.Height());
-
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -120,8 +141,10 @@ void ChupaiDlg::_GetLayout(const CRect& whole, RECTARR& rectlst, INTARR& idlst)
 	idlst.push_back(IDC_STATIC_NUMPLAYERS);
 	idlst.push_back(IDC_RICHEDIT_NUMPLAYERS);
 	idlst.push_back(IDC_BUTTON_SET);
+	idlst.push_back(IDC_STATIC_TIP1);
+	idlst.push_back(IDC_CHECK_FASTSETMAIN);
 	idlst.push_back(IDC_STATIC_HURCD);
-	idlst.push_back(IDC_LIST_HURCD);
+	idlst.push_back(IDC_LISTCTRL_HURCD);
 	idlst.push_back(IDC_STATIC_MSGRCD);
 	idlst.push_back(IDC_RICHEDIT_MSGRCD);
 }
@@ -152,7 +175,21 @@ void ChupaiDlg::_GetLayout(const CRect& whole, RECTARR& rectlst)
 	tmp.right = ir.right;
 	rectlst.push_back(tmp); /// IDC_BUTTON_SET
 
+	tmp.top = tmp.bottom + 1;
+	tmp.left = mainwndrect.right + 2;
+	tmp.right = ir.right;
+	tmp.bottom = tmp.top + 14;
+	rectlst.push_back(tmp); /// IDC_STATIC_TIP1
 	//// } tmp
+
+
+	////redefine tmp{
+	tmp.right = ir.right;
+	tmp.left = tmp.right - 66;
+	tmp.top = ir.top + 100;
+	tmp.bottom = ir.top + 120;
+	rectlst.push_back(tmp); /// IDC_CHECK_FASTSETMAIN
+	////}tmp
 
 	////redefine tmp {
 	tmp.left = mainwndrect.right + ir.Width()*0.01;
@@ -187,13 +224,70 @@ void ChupaiDlg::OnSize(UINT nType, int cx, int cy)
 		INTARR idlst;
 		RECTARR rectlst;
 		_GetLayout(r, rectlst, idlst);
-		if(m_pMainWnd && IsWindow(m_pMainWnd->m_hWnd)){
+		if(m_pMainWnd && IsWindow(m_pMainWnd->GetSafeHwnd())){
 			this->m_pMainWnd->MoveWindow(&rectlst[0], false);
 		}
 		for(int i = 1; i < idlst.size(); i++){
 			GetDlgItem(idlst[i])->MoveWindow(&rectlst[i], false);
 		}
 
+		{
+			CRect r;
+			m_ListCtrl_HuRcd.GetClientRect(&r);
+			for(int i = 1; i <= m_pMainWnd->m_NumPlayers; i++)
+				this->m_ListCtrl_HuRcd.SetColumnWidth(i, r.Width() / m_pMainWnd->m_NumPlayers);
+		}
+
 		Invalidate();
 	}
+}
+
+void ChupaiDlg::OnBnClickedCheckFastsetmain()
+{
+	// TODO: Add your control notification handler code here
+	this->m_pMainWnd->m_FastSet = ((CButton*)GetDlgItem(IDC_CHECK_FASTSETMAIN))->GetCheck();
+}
+
+BOOL ChupaiDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	if(pMsg->message == WM_KEYDOWN){
+		if(pMsg->hwnd != this->GetDlgItem(IDC_RICHEDIT_NUMPLAYERS)->GetSafeHwnd() &&
+			pMsg->hwnd != this->GetDlgItem(IDC_RICHEDIT_MSGRCD)->GetSafeHwnd()){
+			switch(MapVirtualKey(pMsg->lParam>>16&0xff, 1)){
+				case VK_CONTROL: 
+					this->m_CtrlDownNonEdit = 1;
+				
+				break;
+			}
+			if(pMsg->wParam == 'Y' && m_CtrlDownNonEdit){
+				m_pMainWnd->GoNext();
+			}
+			else if(pMsg->wParam == 'Z' && m_CtrlDownNonEdit){
+				m_pMainWnd->GoPrev();
+			}			
+		}
+	}
+	else if(pMsg->message == WM_KEYUP){	
+		switch(MapVirtualKey(pMsg->lParam>>16&0xff, 1)){
+			case VK_CONTROL: 
+				this->m_CtrlDownNonEdit = 0;
+			break;
+		}
+	}
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+void ChupaiDlg::RA(const CString &str, int nlf)
+{
+	CString s;
+	m_RichEdit_MsgRcd.GetWindowTextW(s);
+	s += str;
+	for(int i = 0; i < nlf; i++){
+		s += L"\n";
+	}
+	m_RichEdit_MsgRcd.SetWindowTextW(s);
+	m_RichEdit_MsgRcd.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
 }

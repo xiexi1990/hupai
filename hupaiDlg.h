@@ -7,6 +7,7 @@
 // ChupaiDlg dialog
 
 #include "MainWnd.h"
+#include "afxcmn.h"
 
 class ChupaiDlg : public CDialog
 {
@@ -17,7 +18,8 @@ public:
 // Dialog Data
 
 	MainWnd *m_pMainWnd;
-	bool m_Inited;
+	bool m_Inited, m_CtrlDownNonEdit;
+	void RA(const CString& str, int nlf = 1);
 
 	enum { IDD = IDD_HUPAI_DIALOG };
 
@@ -39,4 +41,8 @@ protected:
 	virtual void OnOK();
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnBnClickedCheckFastsetmain();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CListCtrl m_ListCtrl_HuRcd;
+	CRichEditCtrl m_RichEdit_MsgRcd;
 };

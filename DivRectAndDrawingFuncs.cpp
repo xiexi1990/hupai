@@ -66,6 +66,12 @@ int MainWnd::DivWhole(const CRect &whole, int num, RECTARR &rectlst)
 		mvto.x = whole.left + ((whole.Width() - bwidth)/2); mvto.y = whole.bottom - bheight;
 		base.MoveToXY(mvto);
 		rectlst.push_back(base);
+		////5th rect: go previous
+		rectlst.push_back(_setRect(whole, 0.79, 0.01, 0.99, 0.1));
+		////6th rect: go next
+		rectlst.push_back(_setRect(whole, 0.79, 0.11, 0.99, 0.2));
+		////7th rect: newgame
+		rectlst.push_back(_setRect(whole, 0.01, 0.01, 0.2, 0.16));
 	}
 	return 0;
 }

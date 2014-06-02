@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "hupai.h"
-#include "MainWnd.h"
 #include "hupaiDlg.h"
 
 unsigned int MainWnd::KDraw(void *pp)
@@ -12,7 +11,7 @@ unsigned int MainWnd::KDraw(void *pp)
 	PLAYERINFOARR pinfos;
 	int nplayers;
 	State currentstate;
-	CRect wndrect;
+	CRect wndrect, goprevrect, gonextrect, newgamerect;
 	LOGFONT logfont;
 	CFont font, *deffont;
 	memset(&logfont, 0, sizeof LOGFONT);
@@ -51,11 +50,13 @@ unsigned int MainWnd::KDraw(void *pp)
 		}
 		
 		entercnt++;
+#if 0
 		{
 			CString s;
 			s.Format(L"Enter KDraw %d !", entercnt);
 			PP->m_PP->SetWindowTextW(s);
 		}
+#endif
 
 		if(needcalrects){
 			RECTARR raplayers, rasingle;
@@ -82,12 +83,18 @@ unsigned int MainWnd::KDraw(void *pp)
 
 			}
 			pinfos = PP->m_PlayersInfo;
+			PP->m_GoPrevRect = raplayers[4];
+			PP->m_GoNextRect = raplayers[5];
+			PP->m_NewGameRect = raplayers[6];
 			LeaveCriticalSection(&PP->m_csLoadData);
-			
+			goprevrect = raplayers[4];
+			gonextrect = raplayers[5];
+			newgamerect = raplayers[6];
 		}
 
 		PP->m_dcmDraw1.FillSolidRect(&wndrect, 0xffffff);
-		if(!(lbuttondown && currentstate.m_InnerAt == 0)){
+	//	if(!(lbuttondown && currentstate.m_InnerAt == 0)){
+		if(!(lbuttondown)){
 			for(int i = 0; i < nplayers; i++){
 				if(currentstate.m_FirstClick == i){
 					DrawGradFrame(&PP->m_dcmDraw1, pinfos[i].m_WholeRect, -pinfos[i].m_WholeRect.Width()*0.2, 0xffc000, 0xffffff);
@@ -108,6 +115,18 @@ unsigned int MainWnd::KDraw(void *pp)
 			DrawFrame(&PP->m_dcmDraw1, pinfos[i].m_WholeRect, 0);
 		}
 
+		DrawFrame(&PP->m_dcmDraw1, goprevrect, 0);
+		DrawFrame(&PP->m_dcmDraw1, gonextrect, 0);
+		DrawFrame(&PP->m_dcmDraw1, newgamerect, 0);
+		logfont.lfHeight = goprevrect.Height() * 0.6;
+		font.CreateFontIndirectW(&logfont);
+		deffont = PP->m_dcmDraw1.SelectObject(&font);
+		PP->m_dcmDraw1.DrawText(L"撤销Ctrl+Z", &goprevrect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
+		PP->m_dcmDraw1.DrawText(L"重复Ctrl+Y", &gonextrect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
+		PP->m_dcmDraw1.DrawText(L"新局 N", &newgamerect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
+		PP->m_dcmDraw1.SelectObject(deffont);
+		font.DeleteObject();
+
 		//// create font - draw text - delete font
 		///1st player name and sum
 		logfont.lfHeight = pinfos[0].m_NameRect.Height() *0.6;
@@ -116,7 +135,10 @@ unsigned int MainWnd::KDraw(void *pp)
 		
 		for(int i = 0; i < nplayers; i++){			
 			PP->m_dcmDraw1.DrawText(pinfos[i].m_Name, &pinfos[i].m_NameRect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
-			tmpstr.Format(L"%+d", pinfos[i].m_Sum);
+			if(pinfos[i].m_Sum == 0)
+				tmpstr = L"0";
+			else
+				tmpstr.Format(L"%+d", pinfos[i].m_Sum);
 			PP->m_dcmDraw1.DrawText(tmpstr, &pinfos[i].m_FanRect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
 		}
 

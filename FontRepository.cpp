@@ -16,7 +16,7 @@ FontRepository::~FontRepository(void)
 	}
 }
 
-bool FontRepository::_QueryHeight(int height)
+bool FontRepository::_QueryHeight(int height) const
 {
 	for(int i = 0; i < this->m_FtSizArr.size(); i++){
 		if(height == m_FtSizArr[i])
@@ -34,7 +34,7 @@ bool FontRepository::QueryHeight(int height)
 }
 
 
-CFont* FontRepository::_GetHeight(int height)
+CFont* FontRepository::_GetHeight(int height) const
 {
 	for(int i = 0; i < m_FtSizArr.size(); i++){
 		if(height == m_FtSizArr[i])

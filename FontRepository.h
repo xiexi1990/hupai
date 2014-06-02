@@ -13,8 +13,8 @@ public:
 	FontRepository(void);
 	~FontRepository(void);
 protected:
-	bool _QueryHeight(int height);
-	CFont* _GetHeight(int height);
+	bool _QueryHeight(int height) const;
+	CFont* _GetHeight(int height) const;
 	bool _AddHeight(int height);
 	
 	CCriticalSection m_CS;

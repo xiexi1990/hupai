@@ -27,8 +27,8 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-	void _GetLayout(const CRect& whole, RECTARR& rectlst, int numplayers);
-	void _GetLayout(const CRect& whole, RECTARR& rectlst, INTARR& idlst, int numplayers);
+	void _GetLayout(const CRect& whole, RECTARR& rectlst, int numplayers) const;
+	void _GetLayout(const CRect& whole, RECTARR& rectlst, INTARR& idlst, int numplayers) const;
 	int _GetNum(const CString& str, int& n);
 //	int _SetNum(int nset, CString& str, bool showplussign);
 	int _SetAppendNum(int nset, CString& str, bool showplussign);

@@ -5,7 +5,7 @@
 #include "hupai.h"
 #include "SimpleParser.h"
 #include "SetFanDlg.h"
-#include "MainWnd.h"
+#include "hupaiDlg.h"
 #include "resource.h"
 
 
@@ -21,6 +21,7 @@ SetFanDlg::SetFanDlg(CWnd* pParent /*=NULL*/)
 	m_IgnoreRichChange = 1;
 	m_HuTypeLock = 0;
 	memset(m_DianAppendFan, 0, sizeof m_DianAppendFan);
+	memset(m_DianFinalFan, 0, sizeof m_DianFinalFan);
 }
 
 SetFanDlg::~SetFanDlg()
@@ -128,6 +129,9 @@ BOOL SetFanDlg::OnInitDialog()
 		m_DianPlayer = m_PP->m_CurStat.m_FirstClick;
 		m_Zi = 0;
 	}
+///// initialize FastSet
+	((CButton*)GetDlgItem(IDC_CHECK_FASTSET))->SetCheck(m_PP->m_FastSet);
+////////
 	CString str, str2;
 	str.Empty();
 
@@ -189,7 +193,7 @@ BOOL SetFanDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void SetFanDlg::_GetLayout(const CRect &whole, RECTARR &rectlst, INTARR& idlst, int numplayers)
+void SetFanDlg::_GetLayout(const CRect &whole, RECTARR &rectlst, INTARR& idlst, int numplayers) const
 {
 	_GetLayout(whole, rectlst, numplayers);
 	idlst.clear();
@@ -220,7 +224,7 @@ void SetFanDlg::_GetLayout(const CRect &whole, RECTARR &rectlst, INTARR& idlst, 
 	}
 }
 
-void SetFanDlg::_GetLayout(const CRect &whole, RECTARR &rectlst, int numplayers)
+void SetFanDlg::_GetLayout(const CRect &whole, RECTARR &rectlst, int numplayers) const
 {
 	rectlst.clear();
 	CRect upperrect = sR(whole, 0, 0, 1, 0.36);
@@ -251,7 +255,7 @@ BOOL SetFanDlg::PreTranslateMessage(MSG* pMsg)
 	if(m_PP->m_FastSet){
 		if(pMsg->message == WM_MOUSEMOVE){
 			for(int i = 0; i < 4; i++){
-				if(this->m_BtnHuType[i].m_hWnd == pMsg->hwnd){
+				if(this->m_BtnHuType[i].GetSafeHwnd() == pMsg->hwnd){
 					if(m_HuType != SRL2BITHU(i)){
 						SetHuType(SRL2BITHU(i));
 					}
@@ -405,6 +409,7 @@ void SetFanDlg::OnBnClickedCheckFastset()
 {
 	// TODO: Add your control notification handler code here
 	m_PP->m_FastSet = ((CButton*)GetDlgItem(IDC_CHECK_FASTSET))->GetCheck();
+	((CButton*)m_PP->m_PP->GetDlgItem(IDC_CHECK_FASTSETMAIN))->SetCheck(m_PP->m_FastSet);
 }
 
 void SetFanDlg::OnBnClickedOk()
@@ -418,6 +423,8 @@ void SetFanDlg::OnOK()
 	CString err;
 	err.Empty();
 	for(int i = 0; i < m_PP->m_NumPlayers; i++){
+		if(m_Zi == 0 && !(i == m_HuPlayer || i == m_DianPlayer))
+			continue;
 		CString s;
 		this->m_RichDianFinalFan[i].GetWindowTextW(s);
 		if(_GetNum(s, m_DianFinalFan[i]) != 0)

@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "Recorder.h"
 // MainWnd
 
 class ChupaiDlg;
@@ -49,6 +49,7 @@ struct State
 	State() {m_At = -1; m_InnerAt = 0; m_FirstClick = -1;}
 };
 
+
 class MainWnd : public CWnd
 {
 	DECLARE_DYNAMIC(MainWnd)
@@ -70,13 +71,23 @@ public:
 	CBitmap m_bmpCrit, m_bmpDraw1, m_bmpPreDraw;
 	CBitmap *m_defbmpCrit, *m_defbmpDraw1, *m_defbmpPreDraw;
 	int MAXX, MAXY;
-	CRect m_WndRect;
+	CRect m_WndRect, m_GoPrevRect, m_GoNextRect, m_NewGameRect;
 	int m_NumPlayers, m_TypeFan[4], m_PlusFan, m_MingFan, m_AnFan, m_MenZiFan;
 
 	State m_CurStat;
 	PLAYERINFOARR m_PlayersInfo;
 
 	void Refresh();
+	void NewGame();
+
+	RecordNode m_CurRcdNode;
+	int GoPrev();
+	int GoNext();
+	Recorder m_Rcder;
+	int DoOperation(const Operation& op, bool refresh = 1);
+	int UndoOperation(const Operation& op, bool refresh = 1);
+	CString AnnounceOperation(const Operation& op);
+	CString AnnounceRcdNode(const RecordNode& node);
 	
 	static void DrawFrame(CDC* pdc, const CRect& r, unsigned int color);
 	static void DrawGradFrame(CDC* pdc, const CRect& outerrect, int width, unsigned int outercolor, unsigned int innercolor);
@@ -85,7 +96,7 @@ public:
 	static void _drawGradFrame(CDC* pdc, const CRect& outerrect, int width, unsigned int outercolor, unsigned int innercolor, bool usepen);
 	
 protected:
-	void GetPointAt(const CPoint& point, int& at, int& innerat);
+	void GetPointAt(const CPoint& point, int& at, int& innerat) const;
 	static int DivWhole(const CRect& whole, int num, RECTARR& rectlst);
 	static int DivPlayerRect(const CRect& playerrect, RECTARR& rectlst);
 
