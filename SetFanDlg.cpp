@@ -222,7 +222,7 @@ void SetFanDlg::_GetLayout(const CRect &whole, RECTARR &rectlst, INTARR& idlst, 
 	idlst.push_back(IDCANCEL);
 
 	////check
-	for(int i = 0; i < idlst.size(); i++){
+	for(unsigned int i = 0; i < idlst.size(); i++){
 		if(idlst[i] >=  IDC_RICHEDIT_DIANFINALFAN_START + numplayers && idlst[i] < IDC_RICHEDIT_DIANFINALFAN_START + MAXPLAYER){
 			AfxMessageBox(L"error: idlst[i] >=  IDC_RICHEDIT_DIANFINALFAN_START + numplayers && idlst[i] < IDC_RICHEDIT_DIANFINALFAN_START + MAXPLAYER");
 			throw;

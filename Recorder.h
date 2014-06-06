@@ -35,12 +35,12 @@ public:
 	void Clear();
 	RecordNode GoNext();
 	RecordNode GoPrev();
-	int SetMaxSize(int maxsize);
+	int SetMaxSize(unsigned int maxsize);
 	Recorder(void);
 	~Recorder(void);
 
 protected:
 	RCDNODELST m_RcdNodeLst;
 	RCDNODELST::iterator m_It;
-	int m_MaxSize;
+	unsigned int m_MaxSize;
 };

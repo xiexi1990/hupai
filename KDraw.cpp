@@ -16,7 +16,7 @@ unsigned int MainWnd::KDraw(void *pp)
 	LOGFONT logfont;
 	CFont font, *deffont;
 	memset(&logfont, 0, sizeof LOGFONT);
-	wcscpy(logfont.lfFaceName, L"ºÚÌå");
+	wcscpy_s(logfont.lfFaceName, L"ºÚÌå");
 	logfont.lfWeight = FW_HEAVY;
 //	logfont.lfPitchAndFamily = DEFAULT_PITCH | FF_SWISS;
 

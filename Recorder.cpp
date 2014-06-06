@@ -53,9 +53,9 @@ void Recorder::PushRcdNode(const RCDNODE &rcdnode)
 	m_It = m_RcdNodeLst.end();
 }
 
-int Recorder::SetMaxSize(int maxsize)
+int Recorder::SetMaxSize(unsigned int maxsize)
 {
-	int siz = m_MaxSize;
+	unsigned int siz = m_MaxSize;
 	if(maxsize == 0){
 		m_MaxSize = 0;
 		return siz;
@@ -65,9 +65,9 @@ int Recorder::SetMaxSize(int maxsize)
 		if(m_RcdNodeLst.size() <= maxsize){
 		}
 		else{
-			int prevsiz = m_RcdNodeLst.size();
+			unsigned int prevsiz = m_RcdNodeLst.size();
 			m_It = m_RcdNodeLst.begin();
-			for(int i = 0; i < prevsiz - maxsize; i++){
+			for(unsigned int i = 0; i < prevsiz - maxsize; i++){
 				m_It++;
 			}
 			m_RcdNodeLst.erase(m_RcdNodeLst.begin(), m_It);

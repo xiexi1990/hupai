@@ -10,7 +10,7 @@ FontRepository::FontRepository(void)
 
 FontRepository::~FontRepository(void)
 {
-	for(int i = 0; i < this->m_pFtArr.size(); i++){
+	for(unsigned int i = 0; i < this->m_pFtArr.size(); i++){
 		m_pFtArr[i]->DeleteObject();
 		delete m_pFtArr[i];
 	}
@@ -18,7 +18,7 @@ FontRepository::~FontRepository(void)
 
 bool FontRepository::_QueryHeight(int height) const
 {
-	for(int i = 0; i < this->m_FtSizArr.size(); i++){
+	for(unsigned int i = 0; i < this->m_FtSizArr.size(); i++){
 		if(height == m_FtSizArr[i])
 			return 1;
 	}
@@ -36,7 +36,7 @@ bool FontRepository::QueryHeight(int height)
 
 CFont* FontRepository::_GetHeight(int height) const
 {
-	for(int i = 0; i < m_FtSizArr.size(); i++){
+	for(unsigned int i = 0; i < m_FtSizArr.size(); i++){
 		if(height == m_FtSizArr[i])
 			return m_pFtArr[i];
 	}

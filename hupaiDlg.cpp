@@ -227,7 +227,7 @@ void ChupaiDlg::OnSize(UINT nType, int cx, int cy)
 		if(m_pMainWnd && IsWindow(m_pMainWnd->GetSafeHwnd())){
 			this->m_pMainWnd->MoveWindow(&rectlst[0], false);
 		}
-		for(int i = 1; i < idlst.size(); i++){
+		for(unsigned int i = 1; i < idlst.size(); i++){
 			GetDlgItem(idlst[i])->MoveWindow(&rectlst[i], false);
 		}
 
