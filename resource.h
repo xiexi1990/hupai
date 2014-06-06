@@ -10,6 +10,11 @@
 #define IDB_BITMAP_WINPENG              139
 #define IDB_BITMAP_WINQING              140
 #define IDD_SETNAME_DIALOG              142
+#define IDB_BITMAP_WINBASE_S            145
+#define IDB_BITMAP_HUAZHU_S             146
+#define IDB_BITMAP_WINPENG_S            147
+#define IDB_BITMAP_WINQING_S            148
+#define IDB_BITMAP_WINQINGPENG_S        149
 #define IDC_LISTCTRL_HURCD              1006
 #define IDC_RICHEDIT_FINALFAN           1007
 #define IDC_RICHEDIT_NUMPLAYERS         1008
@@ -32,7 +37,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101

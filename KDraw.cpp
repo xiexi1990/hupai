@@ -11,7 +11,8 @@ unsigned int MainWnd::KDraw(void *pp)
 	PLAYERINFOARR pinfos;
 	int nplayers;
 	State currentstate;
-	CRect wndrect, goprevrect, gonextrect, newgamerect;
+	CRect wndrect, goprevrect, gonextrect, newgamerect, charect;
+
 	LOGFONT logfont;
 	CFont font, *deffont;
 	memset(&logfont, 0, sizeof LOGFONT);
@@ -50,7 +51,7 @@ unsigned int MainWnd::KDraw(void *pp)
 		}
 		
 		entercnt++;
-#if 0
+#if 1
 		{
 			CString s;
 			s.Format(L"Enter KDraw %d !", entercnt);
@@ -74,22 +75,26 @@ unsigned int MainWnd::KDraw(void *pp)
 				PP->m_PlayersInfo[i].m_FanRect = rasingle[1];
 				PP->m_PlayersInfo[i].m_MenRect = rasingle[2];
 				PP->m_PlayersInfo[i].m_HuRect = rasingle[3];
-				PP->m_PlayersInfo[i].m_MingGangRect = rasingle[4];
-				PP->m_PlayersInfo[i].m_MingGangWrdRect = rasingle[5];
-				PP->m_PlayersInfo[i].m_MingGangCntRect = rasingle[6];
-				PP->m_PlayersInfo[i].m_AnGangRect = rasingle[7];
-				PP->m_PlayersInfo[i].m_AnGangWrdRect = rasingle[8];
-				PP->m_PlayersInfo[i].m_AnGangCntRect = rasingle[9];
+				PP->m_PlayersInfo[i].m_HuLeftRect = rasingle[4];
+				PP->m_PlayersInfo[i].m_HuRightRect = rasingle[5];
+				PP->m_PlayersInfo[i].m_MingGangRect = rasingle[6];
+				PP->m_PlayersInfo[i].m_MingGangWrdRect = rasingle[7];
+				PP->m_PlayersInfo[i].m_MingGangCntRect = rasingle[8];
+				PP->m_PlayersInfo[i].m_AnGangRect = rasingle[9];
+				PP->m_PlayersInfo[i].m_AnGangWrdRect = rasingle[10];
+				PP->m_PlayersInfo[i].m_AnGangCntRect = rasingle[11];
 
 			}
 			pinfos = PP->m_PlayersInfo;
 			PP->m_GoPrevRect = raplayers[4];
 			PP->m_GoNextRect = raplayers[5];
 			PP->m_NewGameRect = raplayers[6];
+			PP->m_ChaRect = raplayers[7];
 			LeaveCriticalSection(&PP->m_csLoadData);
 			goprevrect = raplayers[4];
 			gonextrect = raplayers[5];
 			newgamerect = raplayers[6];
+			charect = raplayers[7];
 		}
 
 		PP->m_dcmDraw1.FillSolidRect(&wndrect, 0xffffff);
@@ -118,12 +123,14 @@ unsigned int MainWnd::KDraw(void *pp)
 		DrawFrame(&PP->m_dcmDraw1, goprevrect, 0);
 		DrawFrame(&PP->m_dcmDraw1, gonextrect, 0);
 		DrawFrame(&PP->m_dcmDraw1, newgamerect, 0);
+		DrawFrame(&PP->m_dcmDraw1, charect, 0);
 		logfont.lfHeight = goprevrect.Height() * 0.6;
 		font.CreateFontIndirectW(&logfont);
 		deffont = PP->m_dcmDraw1.SelectObject(&font);
 		PP->m_dcmDraw1.DrawText(L"撤销Ctrl+Z", &goprevrect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
 		PP->m_dcmDraw1.DrawText(L"重复Ctrl+Y", &gonextrect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
 		PP->m_dcmDraw1.DrawText(L"新局 N", &newgamerect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
+		PP->m_dcmDraw1.DrawText(L"查花猪 C", &charect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
 		PP->m_dcmDraw1.SelectObject(deffont);
 		font.DeleteObject();
 
@@ -167,8 +174,44 @@ unsigned int MainWnd::KDraw(void *pp)
 		PP->m_dcmDraw1.SetTextColor(0);
 		PP->m_dcmDraw1.SelectObject(deffont);
 		font.DeleteObject();
-
-
+		{
+#define BIT2IDBHU(bit) ((bit)==BASEHU?IDB_BITMAP_WINBASE_S:((bit)==PENGHU?IDB_BITMAP_WINPENG_S:((bit)==QINGHU?IDB_BITMAP_WINQING_S:((bit)==QINGPENGHU?IDB_BITMAP_WINQINGPENG_S:((bit)==HUAZHU?IDB_BITMAP_HUAZHU_S:((bit)==USERDEFHU?ERRIDBHU:ERRIDBHU))))))
+			int hulst[2], numhus;
+			for(int i = 0; i < PP->m_NumPlayers; i++){
+				numhus = PP->CheckBitHu(pinfos[i].m_Hu, hulst);
+				if(numhus == 1){			
+					if(BIT2IDBHU(hulst[0]) != ERRIDBHU){
+						PP->m_bmpBitmap.LoadBitmapW(BIT2IDBHU(hulst[0]));
+						PP->m_defbmpBitmap = PP->m_dcmBitmap.SelectObject(&PP->m_bmpBitmap);
+						PP->m_dcmDraw1.StretchBlt(pinfos[i].m_HuRect.left, pinfos[i].m_HuRect.top, pinfos[i].m_HuRect.Width(), pinfos[i].m_HuRect.Height(), &PP->m_dcmBitmap, 0, 0, 120, 120, SRCCOPY);
+						PP->m_dcmBitmap.SelectObject(PP->m_defbmpBitmap);
+						PP->m_bmpBitmap.DeleteObject();
+					}
+					DrawFrame(&PP->m_dcmDraw1, pinfos[i].m_HuRect, 0);
+				}
+				else if(numhus == 2){
+					if(BIT2IDBHU(hulst[0]) != ERRIDBHU){
+						PP->m_bmpBitmap.LoadBitmapW(BIT2IDBHU(hulst[0]));
+						PP->m_defbmpBitmap = PP->m_dcmBitmap.SelectObject(&PP->m_bmpBitmap);
+						PP->m_dcmDraw1.StretchBlt(pinfos[i].m_HuLeftRect.left, pinfos[i].m_HuLeftRect.top, pinfos[i].m_HuLeftRect.Width(), pinfos[i].m_HuLeftRect.Height(), &PP->m_dcmBitmap, 0, 0, 120, 120, SRCCOPY);
+						PP->m_dcmBitmap.SelectObject(PP->m_defbmpBitmap);
+						PP->m_bmpBitmap.DeleteObject();
+					}
+					if(BIT2IDBHU(hulst[1]) != ERRIDBHU){
+						PP->m_bmpBitmap.LoadBitmapW(BIT2IDBHU(hulst[1]));
+						PP->m_defbmpBitmap = PP->m_dcmBitmap.SelectObject(&PP->m_bmpBitmap);
+						PP->m_dcmDraw1.StretchBlt(pinfos[i].m_HuRightRect.left, pinfos[i].m_HuRightRect.top, pinfos[i].m_HuRightRect.Width(), pinfos[i].m_HuRightRect.Height(), &PP->m_dcmBitmap, 0, 0, 120, 120, SRCCOPY);
+						PP->m_dcmBitmap.SelectObject(PP->m_defbmpBitmap);
+						PP->m_bmpBitmap.DeleteObject();		
+					}
+					DrawFrame(&PP->m_dcmDraw1, pinfos[i].m_HuLeftRect, 0);
+					DrawFrame(&PP->m_dcmDraw1, pinfos[i].m_HuRightRect, 0);
+				}
+				else{
+				}
+			}
+			
+		}
 		
 		EnterCriticalSection(&PP->m_csCrit);
 		PP->m_dcmCrit.BitBlt(0, 0, wndrect.Width(), wndrect.Height(), &PP->m_dcmDraw1, 0, 0, SRCCOPY);

@@ -84,23 +84,23 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,658,321,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,658,420,50,14
-    CONTROL         "",IDC_RICHEDIT_FINALFAN,"RichEdit20W",ES_CENTER | ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,273,172,116,126
+    CONTROL         "",IDC_RICHEDIT_FINALFAN,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x1085,273,172,116,126
     CTEXT           "番",IDC_STATIC_FAN,412,177,155,110
-    CONTROL         "",IDC_RICHEDIT_BASEFAN,"RichEdit20W",ES_CENTER | ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,7,169,103,125
-    CONTROL         "",IDC_RICHEDIT_APPENDFAN,"RichEdit20W",ES_MULTILINE | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,133,170,103,125
+    CONTROL         "",IDC_RICHEDIT_BASEFAN,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x1085,7,169,103,125
+    CONTROL         "",IDC_RICHEDIT_APPENDFAN,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x1004,133,170,103,125
     CTEXT           "=",IDC_STATIC_EQUAL,239,170,34,124
     CTEXT           "+",IDC_STATIC_PLUS,113,171,15,124
     CONTROL         "快速选择",IDC_CHECK_FASTSET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,633,170,75,16
 END
 
-IDD_SETNAME_DIALOG DIALOGEX 0, 0, 316, 180
+IDD_SETNAME_DIALOG DIALOGEX 0, 0, 527, 251
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "设定姓名"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,205,159,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,259,159,50,14
-    CONTROL         "",IDC_RICHEDIT_NAME,"RichEdit20W",ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP,45,18,207,113
+    DEFPUSHBUTTON   "OK",IDOK,425,7,95,35
+    PUSHBUTTON      "Cancel",IDCANCEL,425,52,95,35
+    CONTROL         "",IDC_RICHEDIT_NAME,"RichEdit20W",ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP,135,7,257,90
 END
 
 
@@ -123,9 +123,9 @@ BEGIN
     IDD_SETNAME_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 309
+        RIGHTMARGIN, 520
         TOPMARGIN, 7
-        BOTTOMMARGIN, 173
+        BOTTOMMARGIN, 244
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -140,6 +140,11 @@ IDB_BITMAP_WINQINGPENG  BITMAP                  "res\\win_qingpeng3.bmp"
 IDB_BITMAP_WINBASE      BITMAP                  "res\\win_base3.bmp"
 IDB_BITMAP_WINPENG      BITMAP                  "res\\win_pengpeng3.bmp"
 IDB_BITMAP_WINQING      BITMAP                  "res\\win_qing3.bmp"
+IDB_BITMAP_WINBASE_S    BITMAP                  "res\\win_base4.bmp"
+IDB_BITMAP_HUAZHU_S     BITMAP                  "res\\huazhu4.bmp"
+IDB_BITMAP_WINPENG_S    BITMAP                  "res\\win_pengpeng4.bmp"
+IDB_BITMAP_WINQING_S    BITMAP                  "res\\win_qing4.bmp"
+IDB_BITMAP_WINQINGPENG_S BITMAP                  "res\\win_qingpeng4.bmp"
 #endif    // Chinese (P.R.C.) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -167,15 +172,34 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,486,406,50,14,NOT WS_VISIBLE
     PUSHBUTTON      "Cancel",IDCANCEL,424,406,50,14,NOT WS_VISIBLE
     CONTROL         "",IDC_LISTCTRL_HURCD,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,605,169,72,115
-    CONTROL         "",IDC_RICHEDIT_MSGRCD,"RichEdit20W",ES_MULTILINE | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_TABSTOP,607,300,70,89
+    CONTROL         "",IDC_RICHEDIT_MSGRCD,"RichEdit20W",WS_BORDER | WS_VSCROLL | WS_TABSTOP | 0x1004,607,300,70,89
     LTEXT           "????",IDC_STATIC_MSGRCD,608,289,49,9
     LTEXT           "????",IDC_STATIC_HURCD,605,155,49,9
     PUSHBUTTON      "??",IDC_BUTTON_SET,640,7,37,17
-    CONTROL         "",IDC_RICHEDIT_NUMPLAYERS,"RichEdit20W",ES_CENTER | ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP,605,7,32,16
+    CONTROL         "",IDC_RICHEDIT_NUMPLAYERS,"RichEdit20W",WS_BORDER | WS_TABSTOP | 0x81,605,7,32,16
     LTEXT           "??",IDC_STATIC_NUMPLAYERS,583,10,19,9
     CONTROL         "????",IDC_CHECK_FASTSETMAIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,625,137,42,11
     LTEXT           "tip1",IDC_STATIC_TIP1,586,46,79,8
 END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_HUPAI_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 677
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 420
+    END
+END
+#endif    // APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -215,25 +239,6 @@ BEGIN
         VALUE "Translation", 0x409, 1252
     END
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_HUPAI_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 677
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 420
-    END
-END
-#endif    // APSTUDIO_INVOKED
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////

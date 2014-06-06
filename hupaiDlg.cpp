@@ -267,6 +267,12 @@ BOOL ChupaiDlg::PreTranslateMessage(MSG* pMsg)
 			else if(pMsg->wParam == 'Z' && m_CtrlDownNonEdit){
 				m_pMainWnd->GoPrev();
 			}			
+			else if(pMsg->wParam == 'N'){
+				m_pMainWnd->NewGame();
+			}
+			else if(pMsg->wParam == 'C'){
+				m_pMainWnd->Cha();
+			}
 		}
 	}
 	else if(pMsg->message == WM_KEYUP){	

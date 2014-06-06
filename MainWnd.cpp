@@ -73,9 +73,13 @@ void MainWnd::OnShowWindow(BOOL bShow, UINT nStatus)
 		this->m_dcmCrit.CreateCompatibleDC(pdc);
 		this->m_dcmDraw1.CreateCompatibleDC(pdc);
 		this->m_dcmPreDraw.CreateCompatibleDC(pdc);
+		this->m_dcmBitmap.CreateCompatibleDC(pdc);
+
 		this->m_bmpCrit.CreateCompatibleBitmap(pdc, MAXX, MAXY);
 		this->m_bmpDraw1.CreateCompatibleBitmap(pdc, MAXX, MAXY);
 		this->m_bmpPreDraw.CreateCompatibleBitmap(pdc, MAXX, MAXY);
+		
+
 		this->m_defbmpCrit = m_dcmCrit.SelectObject(&m_bmpCrit);
 		this->m_defbmpDraw1 = m_dcmDraw1.SelectObject(&m_bmpDraw1);
 		this->m_defbmpPreDraw = m_dcmPreDraw.SelectObject(&m_bmpPreDraw);
@@ -190,6 +194,9 @@ void MainWnd::GetPointAt(const CPoint &point, int &at, int &innerat) const
 	else if(m_NewGameRect.PtInRect(point)){
 		at = 12;
 	}
+	else if(m_ChaRect.PtInRect(point)){
+		at = 13;
+	}
 	else{
 		for(int i = 0; i < this->m_NumPlayers; i++){
 			if(this->m_PlayersInfo[i].m_WholeRect.PtInRect(point)){
@@ -202,6 +209,19 @@ void MainWnd::GetPointAt(const CPoint &point, int &at, int &innerat) const
 				}
 				else if(m_PlayersInfo[i].m_MenRect.PtInRect(point)){
 					innerat = 3;
+				}
+				else{
+					int bithulst[2], n;
+					n = CheckBitHu(m_PlayersInfo[i].m_Hu, bithulst);
+					if(n == 1 && m_PlayersInfo[i].m_HuRect.PtInRect(point)){
+						innerat = 4;
+					}
+					else if(n == 2 && m_PlayersInfo[i].m_HuLeftRect.PtInRect(point)){
+						innerat = 5;
+					}
+					else if(n == 2 && m_PlayersInfo[i].m_HuRightRect.PtInRect(point)){
+						innerat = 6;
+					}
 				}
 			}
 		}
@@ -240,9 +260,15 @@ void MainWnd::OnLButtonUp(UINT nFlags, CPoint point)
 		NewGame();
 		return;
 	}
+	else if(at == 13){
+		m_CurStat.m_FirstClick = -1;
+		Cha();
+		return;
+	}
 	else if(at >= 0 && at < this->m_NumPlayers){
-		if(innerat != 0){
-			RecordNode node;
+		RecordNode node;
+		bool dorcd = 0;
+		if(innerat == 1 || innerat == 2 || innerat == 3){	
 			Operation op;
 			op.m_OprType = Operation::OT_CHGPLAYERINFO;
 			op.m_OprData[0] = at;
@@ -250,49 +276,127 @@ void MainWnd::OnLButtonUp(UINT nFlags, CPoint point)
 				op.m_OprData[1] = 1;
 				op.m_OprData[2] = 1;
 				op.m_OprData[3] = m_PlayersInfo[at].m_MingGangCnt;
+				node.m_OprLst.push_back(op);
+				if(m_PlayersInfo[at].m_MenQing == 1){
+					op.m_OprData[1] = 3;
+					op.m_OprData[2] = 0;
+					op.m_OprData[3] = m_PlayersInfo[at].m_MenQing;
+					node.m_OprLst.push_back(op);
+				}
 			}
 			else if(innerat == 2){
 				op.m_OprData[1] = 2;
 				op.m_OprData[2] = 1;
 				op.m_OprData[3] = m_PlayersInfo[at].m_AnGangCnt;
+				node.m_OprLst.push_back(op);
 			}
 			else if(innerat == 3){
 				op.m_OprData[1] = 3;
 				op.m_OprData[2] = m_PlayersInfo[at].m_MenQing ^ 1;
 				op.m_OprData[3] = m_PlayersInfo[at].m_MenQing;
+				node.m_OprLst.push_back(op);
 			}
 			else{
 				return;
 			}
-			DoOperation(op, 0);
-			node.m_OprLst.push_back(op);
-			m_Rcder.PushRcdNode(node);
-			m_PP->RA(AnnounceRcdNode(node));
 			
+			dorcd = 1;
 		}
 		else{
 			if(this->m_CurStat.m_FirstClick == -1){	
 				m_CurStat.m_FirstClick = at;			
 			}
 			else{
-				SetFanDlg dlg(this);
-				if(dlg.DoModal() == IDOK){
-					RecordNode node;
+				if(innerat == 4 || innerat == 5 || innerat == 6){
 					Operation op;
 					op.m_OprType = Operation::OT_DIAN;
-					for(int i = 0; i < m_NumPlayers; i++){
-						op.m_OprData[i] = dlg.m_DianFinalFan[i];
+					int numhus, bithulst[2], srlhutype, hufinalfan, dianfinalfan[4], huplayer, dianplayer;
+					numhus = CheckBitHu(m_PlayersInfo[at].m_Hu, bithulst);
+					if(innerat == 4 || innerat == 5){
+						srlhutype = BIT2SRLHU(bithulst[0]);
 					}
-					op.m_ExtraData.push_back(dlg.m_HuType);
-					op.m_ExtraData.push_back(dlg.m_HuFinalFan);
-		
-					DoOperation(op, 0);
-					node.m_OprLst.push_back(op);		
-					this->m_Rcder.PushRcdNode(node);
-					m_PP->RA(AnnounceRcdNode(node));
+					else
+						srlhutype = BIT2SRLHU(bithulst[1]);
+					huplayer = at;
+					if(m_CurStat.m_FirstClick == at){
+						dianplayer = -1;
+					}
+					else{
+						dianplayer = m_CurStat.m_FirstClick;
+					}
+					for(int i = 0; i < m_NumPlayers; i++){
+						dianfinalfan[i] = 0;
+					}
+					if(!(srlhutype >= 0 && srlhutype <= 3)){
+						hufinalfan = 0;
+					}
+					else{
+						hufinalfan = this->m_TypeFan[srlhutype];
+						hufinalfan += m_PlayersInfo[huplayer].m_AnGangCnt * m_AnFan + m_PlayersInfo[huplayer].m_MingGangCnt * m_MingFan;
+						if(dianplayer == -1 && m_PlayersInfo[huplayer].m_MenQing){
+							hufinalfan += m_MenZiFan;
+						}
+						hufinalfan += m_PlusFan;
+						for(int i = 0; i < m_NumPlayers; i++){
+							if(i == huplayer || i != dianplayer && dianplayer != -1)
+								continue;
+							dianfinalfan[i] -= m_PlayersInfo[i].m_AnGangCnt * m_AnFan + m_PlayersInfo[i].m_MingGangCnt * m_MingFan;
+						}
+						if(dianplayer != -1){
+							dianfinalfan[dianplayer] -= hufinalfan;
+							dianfinalfan[huplayer] = -dianfinalfan[dianplayer];
+						}
+						else{
+							for(int i = 0; i < m_NumPlayers; i++){
+								if(i == huplayer)
+									continue;
+								dianfinalfan[i] -= hufinalfan;
+								dianfinalfan[huplayer] -= dianfinalfan[i];
+							}
+						}
+					}
+
+					for(int i = 0; i < m_NumPlayers; i++){
+						op.m_OprData[i] = dianfinalfan[i];
+					}
+					op.m_ExtraData.push_back(SRL2BITHU(srlhutype));
+					op.m_ExtraData.push_back(hufinalfan);
+					node.m_OprLst.push_back(op);
+					dorcd = 1;
+				}
+				else{
+					SetFanDlg dlg(this);
+					if(dlg.DoModal() == IDOK){
+						Operation op;
+						op.m_OprType = Operation::OT_DIAN;
+						for(int i = 0; i < m_NumPlayers; i++){
+							op.m_OprData[i] = dlg.m_DianFinalFan[i];
+						}
+						op.m_ExtraData.push_back(dlg.m_HuType);
+						op.m_ExtraData.push_back(dlg.m_HuFinalFan); 
+						node.m_OprLst.push_back(op);
+						dorcd = 1;
+						if(dlg.m_HuType != USERDEFHU && dlg.m_HuType != ERRBITHU){
+							int bithulst[2];
+							if(CheckBitHu(m_PlayersInfo[dlg.m_HuPlayer].m_Hu, bithulst) < 2){
+								Operation op;
+								op.m_OprType = Operation::OT_CHGPLAYERINFO;
+								op.m_OprData[0] = dlg.m_HuPlayer;
+								op.m_OprData[1] = 7;
+								op.m_OprData[2] = m_PlayersInfo[dlg.m_HuPlayer].m_Hu | dlg.m_HuType;
+								op.m_OprData[3] = m_PlayersInfo[dlg.m_HuPlayer].m_Hu;
+								node.m_OprLst.push_back(op);
+							}
+						}
+					}				
 				}
 				m_CurStat.m_FirstClick = -1;
 			}
+		}
+		if(dorcd){
+			DoRcdNode(node, 0);
+			m_Rcder.PushRcdNode(node);
+			m_PP->RA(AnnounceRcdNode(node));
 		}
 	}
 	else{
@@ -343,8 +447,12 @@ void MainWnd::OnRButtonUp(UINT nFlags, CPoint point)
 		NewGame();
 		return;
 	}
+	else if(at == 13){
+		Cha();
+		return;
+	}
 	else if(at >= 0 && at < this->m_NumPlayers){
-		if(innerat != 0){
+		if(innerat == 1 || innerat == 2 || innerat == 3){
 			RecordNode node;
 			Operation op;
 			op.m_OprType = Operation::OT_CHGPLAYERINFO;
@@ -375,24 +483,39 @@ void MainWnd::OnRButtonUp(UINT nFlags, CPoint point)
 			else{
 				return;
 			}
-			DoOperation(op, 0);
 			node.m_OprLst.push_back(op);
+			DoRcdNode(node, 0);
 			m_Rcder.PushRcdNode(node);
 			m_PP->RA(AnnounceRcdNode(node));
 		}
 		else{
 			SetNameDlg dlg;
 			dlg.m_Name = this->m_PlayersInfo[at].m_Name;
+			dlg.m_Hu = this->m_PlayersInfo[at].m_Hu;
 			if(dlg.DoModal() == IDOK){
-				m_PlayersInfo[at].m_Name = dlg.m_Name;
-				LVCOLUMN col;
-				col.mask = LVCF_TEXT;
-				col.pszText = (LPWSTR)dlg.m_Name.GetString();
-				m_PP->m_ListCtrl_HuRcd.SetColumn(at + 1, &col);
-			}
-			if(this->m_CurStat.m_FirstClick == -1){
-			}
-			else{
+				if(dlg.m_Name == m_PlayersInfo[at].m_Name && dlg.m_Hu == m_PlayersInfo[at].m_Hu){
+					return;
+				}
+				if(dlg.m_Name != m_PlayersInfo[at].m_Name){
+					m_PlayersInfo[at].m_Name = dlg.m_Name;
+					LVCOLUMN col;
+					col.mask = LVCF_TEXT;
+					col.pszText = (LPWSTR)dlg.m_Name.GetString();
+					m_PP->m_ListCtrl_HuRcd.SetColumn(at + 1, &col);
+				}
+				if(dlg.m_Hu != m_PlayersInfo[at].m_Hu){
+					RecordNode node;
+					Operation op;
+					op.m_OprType = Operation::OT_CHGPLAYERINFO;
+					op.m_OprData[0] = at;
+					op.m_OprData[1] = 7;
+					op.m_OprData[2] = dlg.m_Hu;
+					op.m_OprData[3] = m_PlayersInfo[at].m_Hu;
+					node.m_OprLst.push_back(op);
+					DoRcdNode(node, 0);
+					m_Rcder.PushRcdNode(node);
+					m_PP->RA(AnnounceRcdNode(node));
+				}
 			}
 		}
 	}
@@ -416,10 +539,7 @@ int MainWnd::GoPrev()
 	if(node.m_NodeType == RecordNode::NT_NULL){
 		return 1;
 	}
-	OPRLST::iterator it;
-	for(it = node.m_OprLst.begin(); it != node.m_OprLst.end(); it++){
-		UndoOperation(*it);
-	}
+	UndoRcdNode(node);
 	CString str = L"³·Ïú[";
 	str += AnnounceRcdNode(node) + L"]";
 	m_PP->RA(str);
@@ -432,13 +552,28 @@ int MainWnd::GoNext()
 	if(node.m_NodeType == RecordNode::NT_NULL){
 		return 1;
 	}
-	OPRLST::iterator it;
-	for(it = node.m_OprLst.begin(); it != node.m_OprLst.end(); it++){
-		DoOperation(*it);
-	}
+	DoRcdNode(node);
 	CString str = L"ÖØ¸´[";
 	str += AnnounceRcdNode(node) + L"]";
 	m_PP->RA(str);
+	return 0;
+}
+
+int MainWnd::UndoRcdNode(const RecordNode& node, bool refresh)
+{
+	OPRLST::const_iterator it;
+	for(it = node.m_OprLst.begin(); it != node.m_OprLst.end(); it++){
+		UndoOperation(*it, refresh);
+	}
+	return 0;
+}
+
+int MainWnd::DoRcdNode(const RecordNode &node, bool refresh)
+{
+	OPRLST::const_iterator it;
+	for(it = node.m_OprLst.begin(); it != node.m_OprLst.end(); it++){
+		DoOperation(*it, refresh);
+	}
 	return 0;
 }
 
@@ -467,9 +602,64 @@ void MainWnd::NewGame()
 		op.m_OprData[i] |= m_PlayersInfo[i].m_MingGangCnt & 7;
 		op.m_OprData[i] |= (m_PlayersInfo[i].m_AnGangCnt & 7) << 3;
 		op.m_OprData[i] |= (m_PlayersInfo[i].m_MenQing & 1) << 6;
+		op.m_OprData[i] |= (m_PlayersInfo[i].m_Hu & 127) << 7;
 	}
-	DoOperation(op);
 	node.m_OprLst.push_back(op);
+	DoRcdNode(node);
+	this->m_Rcder.PushRcdNode(node);
+	m_PP->RA(AnnounceRcdNode(node));
+}
+
+int MainWnd::CheckBitHu(int bithu, int bithulst[])
+{
+	int n = 0;
+	for(int k = 1; k <= 32; k <<=1){
+		if(bithu & k){
+			if(n <2){
+				bithulst[n] = k;
+			}
+			n++;
+		}
+	}
+	return n;
+}
+
+void MainWnd::Cha()
+{
+	int bigesthu[4], punishfan[4] = {0};
+	for(int i = 0; i < m_NumPlayers; i++){
+		int k;
+		for(k = ERRBITHU; k >= BASEHU; k >>= 1){
+			if(m_PlayersInfo[i].m_Hu & k)
+				break;
+		}
+		bigesthu[i] = k;
+	}
+	for(int i = 0; i < m_NumPlayers; i++){
+		if(bigesthu[i] < BASEHU || bigesthu[i] == HUAZHU){
+			for(int j = 0; j < m_NumPlayers; j++){
+				if(j == i)
+					continue;
+				if(bigesthu[j] >= BASEHU && bigesthu[j] <= QINGPENGHU){
+					int punish = m_TypeFan[BIT2SRLHU(bigesthu[j])];
+					punish += (m_PlayersInfo[j].m_AnGangCnt + m_PlayersInfo[i].m_AnGangCnt)*m_AnFan + (m_PlayersInfo[j].m_MingGangCnt + m_PlayersInfo[i].m_MingGangCnt)*m_MingFan + m_PlayersInfo[j].m_MenQing*m_MenZiFan;
+					if(bigesthu[i] == HUAZHU){
+						punish *= 2;
+					}
+					punishfan[i] -= punish;
+					punishfan[j] += punish;
+				}
+			}
+		}
+	}
+	RecordNode node;
+	Operation op;
+	op.m_OprType = Operation::OT_CHA;
+	for(int i = 0; i < m_NumPlayers; i++){
+		op.m_OprData[i] = punishfan[i];
+	}
+	node.m_OprLst.push_back(op);
+	DoRcdNode(node);
 	this->m_Rcder.PushRcdNode(node);
 	m_PP->RA(AnnounceRcdNode(node));
 }

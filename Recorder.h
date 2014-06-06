@@ -9,8 +9,8 @@ struct Operation
 //	Operation() {}
 	
 	Operation& operator = (const Operation& op);
-	static const int OT_DIAN = 1, OT_SETDEFHUTYPE = 2, OT_SETSUM = 3, OT_SETNUMPLAYERS = 4, 
-		OT_CHGPLAYERINFO = 5, OT_NEWGAME = 6;
+	static const int OT_DIAN = 1, OT_SETHU = 2, OT_SETSUM = 3, OT_SETNUMPLAYERS = 4, 
+		OT_CHGPLAYERINFO = 5, OT_NEWGAME = 6, OT_CHA = 7;
 };
 
 typedef std::list<Operation> OPRLST;

@@ -15,7 +15,7 @@ struct PlayerInfo
 	int m_Hu;
 	static int m_PlusFan;
 	CRect m_WholeRect, m_NameRect, m_FanRect, m_MingGangRect, m_MingGangWrdRect, m_MingGangCntRect, m_AnGangRect, m_AnGangWrdRect, m_AnGangCntRect, 
-		m_MenRect, m_HuRect;
+		m_MenRect, m_HuRect, m_HuLeftRect, m_HuRightRect;
 	CString m_Name;
 	PlayerInfo() {int PlayerInfo::*unto = (int PlayerInfo::*)&PlayerInfo::m_Name; memset(this, 0, *(int*)&unto); m_Name.Empty(); m_MenQing = 1;}
 };
@@ -24,10 +24,15 @@ struct PlayerInfo
 #define PENGHU 2
 #define QINGHU 4
 #define QINGPENGHU 8
-#define USERDEFHU 16
-#define SRL2BITHU(srl) ((srl)==0?BASEHU:((srl)==1?PENGHU:((srl)==2?QINGHU:((srl)==3?QINGPENGHU:(srl)==4?USERDEFHU:0))))
-#define BIT2SRLHU(bit) ((bit)==BASEHU?0:((bit)==PENGHU?1:((bit)==QINGHU?2:((bit)==QINGPENGHU?3:((bit)==USERDEFHU?4:5)))))
-#define BIT2STRHU(bit) ((bit)==BASEHU?L"基本和":((bit)==PENGHU?L"碰碰和":((bit)==QINGHU?L"清一色":((bit)==QINGPENGHU?L"清碰":((bit)==USERDEFHU?L"自定义":L"")))))
+#define HUAZHU 16
+#define USERDEFHU 32
+#define ERRBITHU 64
+#define ERRSRLHU 128
+#define ERRIDBHU 256
+
+#define SRL2BITHU(srl) ((srl)==0?BASEHU:((srl)==1?PENGHU:((srl)==2?QINGHU:((srl)==3?QINGPENGHU:(srl)==4?HUAZHU:((srl)==5?USERDEFHU:ERRBITHU)))))
+#define BIT2SRLHU(bit) ((bit)==BASEHU?0:((bit)==PENGHU?1:((bit)==QINGHU?2:((bit)==QINGPENGHU?3:((bit)==HUAZHU?4:((bit)==USERDEFHU?5:ERRSRLHU))))))
+#define BIT2STRHU(bit) ((bit)==BASEHU?L"基本和":((bit)==PENGHU?L"碰碰和":((bit)==QINGHU?L"清一色":((bit)==QINGPENGHU?L"清碰":((bit)==HUAZHU?L"花猪":((bit)==USERDEFHU?L"自定义":L"错误类型"))))))
 #define SRL2STRHU(srl) BIT2STRHU(SRL2BITHU(srl))
 
 
@@ -67,11 +72,11 @@ public:
 	bool m_FastSet;
 	CWinThread *m_KDrawThread;
 
-	CDC m_dcmCrit, m_dcmDraw1, m_dcmPreDraw;
-	CBitmap m_bmpCrit, m_bmpDraw1, m_bmpPreDraw;
-	CBitmap *m_defbmpCrit, *m_defbmpDraw1, *m_defbmpPreDraw;
+	CDC m_dcmCrit, m_dcmDraw1, m_dcmPreDraw, m_dcmBitmap;
+	CBitmap m_bmpCrit, m_bmpDraw1, m_bmpPreDraw, m_bmpBitmap;
+	CBitmap *m_defbmpCrit, *m_defbmpDraw1, *m_defbmpPreDraw, *m_defbmpBitmap;
 	int MAXX, MAXY;
-	CRect m_WndRect, m_GoPrevRect, m_GoNextRect, m_NewGameRect;
+	CRect m_WndRect, m_GoPrevRect, m_GoNextRect, m_NewGameRect, m_ChaRect;
 	int m_NumPlayers, m_TypeFan[4], m_PlusFan, m_MingFan, m_AnFan, m_MenZiFan;
 
 	State m_CurStat;
@@ -79,6 +84,7 @@ public:
 
 	void Refresh();
 	void NewGame();
+	void Cha();
 
 	RecordNode m_CurRcdNode;
 	int GoPrev();
@@ -86,9 +92,12 @@ public:
 	Recorder m_Rcder;
 	int DoOperation(const Operation& op, bool refresh = 1);
 	int UndoOperation(const Operation& op, bool refresh = 1);
+	int DoRcdNode(const RecordNode& node, bool refresh = 1);
+	int UndoRcdNode(const RecordNode& node, bool refresh = 1);
 	CString AnnounceOperation(const Operation& op);
 	CString AnnounceRcdNode(const RecordNode& node);
-	
+	static int CheckBitHu(int bithu, int bithulst[]);
+
 	static void DrawFrame(CDC* pdc, const CRect& r, unsigned int color);
 	static void DrawGradFrame(CDC* pdc, const CRect& outerrect, int width, unsigned int outercolor, unsigned int innercolor);
 	static void DrawPenFrame(CDC* pdc, const CRect& r, unsigned int color);

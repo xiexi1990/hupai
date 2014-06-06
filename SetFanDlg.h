@@ -1,9 +1,9 @@
 #pragma once
 #include "afxwin.h"
 
-#define IDC_BUTTON_HUTYPE_START 11
-#define IDC_STATIC_PLAYERNAME_START 21
-#define IDC_RICHEDIT_DIANFINALFAN_START 25
+#define IDC_BUTTON_HUTYPE_START 1511
+#define IDC_STATIC_PLAYERNAME_START 1521
+#define IDC_RICHEDIT_DIANFINALFAN_START 1525
 
 #include"MainWnd.h"
 // SetFanDlg dialog

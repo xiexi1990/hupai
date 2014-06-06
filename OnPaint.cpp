@@ -18,8 +18,11 @@ void MainWnd::OnPaint()
 			else if(m_CurStat.m_At == 12 && m_LButtonDown){
 				DrawGradFrame(&m_dcmPreDraw, this->m_NewGameRect, m_NewGameRect.Width()*0.1, 0xffc000, 0xfffcf0);
 			}
+			else if(m_CurStat.m_At == 13 && m_LButtonDown){
+				DrawGradFrame(&m_dcmPreDraw, this->m_ChaRect, m_ChaRect.Width()*0.1, 0xffc000, 0xfffcf0);
+			}
 			else{
-				if(m_CurStat.m_FirstClick != -1 && m_CurStat.m_InnerAt == 0 && m_LButtonDown){
+				if(m_CurStat.m_FirstClick != -1 && (m_CurStat.m_InnerAt == 0 || m_CurStat.m_InnerAt == 4 || m_CurStat.m_InnerAt == 5 || m_CurStat.m_InnerAt == 6) && m_LButtonDown){
 					int oldrop2 = m_dcmPreDraw.SetROP2(R2_MASKPEN);
 					if(m_CurStat.m_At == m_CurStat.m_FirstClick){
 						for(int i = 0; i < this->m_NumPlayers; i++){
@@ -40,8 +43,23 @@ void MainWnd::OnPaint()
 					for(int i = 0; i < m_NumPlayers; i++){
 						m_dcmPreDraw.FillSolidRect(&m_PlayersInfo[i].m_WholeRect, 0xffffff);
 					}
+					if(m_CurStat.m_InnerAt == 4 || m_CurStat.m_InnerAt == 5 || m_CurStat.m_InnerAt == 6){
+						oldrop2 = m_dcmPreDraw.SetROP2(R2_MASKPEN);
+						if(m_CurStat.m_InnerAt == 4){
+							DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRect, m_PlayersInfo[m_CurStat.m_At].m_HuRect.Height()*0.1, 0xffc000, 0xfffcf0);
+							DrawGradPenFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRect, -m_PlayersInfo[m_CurStat.m_At].m_HuRect.Height()*0.4, 0xffc000, 0xfffcf0);
+						}
+						else if(m_CurStat.m_InnerAt == 5){
+							DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect, m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect.Height()*0.1, 0xffc000, 0xfffcf0);
+							DrawGradPenFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect, -m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect.Height()*0.4, 0xffc000, 0xfffcf0);
+						}
+						else if(m_CurStat.m_InnerAt == 6){
+							DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRightRect, m_PlayersInfo[m_CurStat.m_At].m_HuRightRect.Height()*0.1, 0xffc000, 0xfffcf0);
+							DrawGradPenFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRightRect, -m_PlayersInfo[m_CurStat.m_At].m_HuRightRect.Height()*0.4, 0xffc000, 0xfffcf0);
+						}
+						m_dcmPreDraw.SetROP2(oldrop2);
+					}
 				}
-
 
 				if(m_CurStat.m_InnerAt == 0 && m_LButtonDown){
 					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffc000, 0xfffcf0);
@@ -73,7 +91,26 @@ void MainWnd::OnPaint()
 			else if(m_CurStat.m_At == 12){
 				DrawGradFrame(&m_dcmPreDraw, this->m_NewGameRect, m_NewGameRect.Width()*0.1, 0xffff00, 0xfffff0);
 			}
+			else if(m_CurStat.m_At == 13){
+				DrawGradFrame(&m_dcmPreDraw, this->m_ChaRect, m_ChaRect.Width()*0.1, 0xffff00, 0xfffff0);
+			}
 			else{
+				if(m_CurStat.m_FirstClick != -1 && (m_CurStat.m_InnerAt == 4 || m_CurStat.m_InnerAt == 5 || m_CurStat.m_InnerAt == 6)){
+					int oldrop2 = m_dcmPreDraw.SetROP2(R2_MASKPEN);
+					if(m_CurStat.m_InnerAt == 4){
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRect, m_PlayersInfo[m_CurStat.m_At].m_HuRect.Height()*0.1, 0xffff00, 0xfffff0);
+						DrawGradPenFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRect, -m_PlayersInfo[m_CurStat.m_At].m_HuRect.Height()*0.4, 0xffff00, 0xfffff0);
+					}
+					else if(m_CurStat.m_InnerAt == 5){
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect, m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect.Height()*0.1, 0xffff00, 0xfffff0);
+						DrawGradPenFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect, -m_PlayersInfo[m_CurStat.m_At].m_HuLeftRect.Height()*0.4, 0xffff00, 0xfffff0);
+					}
+					else if(m_CurStat.m_InnerAt == 6){
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRightRect, m_PlayersInfo[m_CurStat.m_At].m_HuRightRect.Height()*0.1, 0xffff00, 0xfffff0);
+						DrawGradPenFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_HuRightRect, -m_PlayersInfo[m_CurStat.m_At].m_HuRightRect.Height()*0.4, 0xffff00, 0xfffff0);
+					}
+					m_dcmPreDraw.SetROP2(oldrop2);
+				}
 				if(m_CurStat.m_InnerAt == 0){
 					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
 				}
@@ -87,7 +124,7 @@ void MainWnd::OnPaint()
 					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect, -m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect.Width()*0.4, 0xff8000, 0xffe0c0);
 					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect.Width()*0.1, 0xff8000, 0xffe0c0);
 				}
-				else if(m_CurStat.m_InnerAt == 3){
+				else if(m_CurStat.m_InnerAt == 3){  ///men qing
 					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
 					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MenRect, -m_PlayersInfo[m_CurStat.m_At].m_MenRect.Width()*0.2, 0xff8000, 0xffe0c0);
 				}

@@ -71,7 +71,9 @@ int MainWnd::DivWhole(const CRect &whole, int num, RECTARR &rectlst)
 		////6th rect: go next
 		rectlst.push_back(_setRect(whole, 0.79, 0.11, 0.99, 0.2));
 		////7th rect: newgame
-		rectlst.push_back(_setRect(whole, 0.01, 0.01, 0.2, 0.16));
+		rectlst.push_back(_setRect(whole, 0.01, 0.01, 0.21, 0.1));
+		////8th rect: cha
+		rectlst.push_back(_setRect(whole, 0.01, 0.11, 0.21, 0.2));
 	}
 	return 0;
 }
@@ -79,12 +81,14 @@ int MainWnd::DivWhole(const CRect &whole, int num, RECTARR &rectlst)
 int MainWnd::DivPlayerRect(const CRect &playerrect, RECTARR &rectlst)
 {
 	rectlst.clear();
-	CRect ming, an;
+	CRect ming, an, hu;
 
 	rectlst.push_back(_setRect(playerrect,        0,      0.1,        1,     0.45)); //name
-	rectlst.push_back(_setRect(playerrect,        0,     0.45,        1,     0.75)); //fan
+	rectlst.push_back(_setRect(playerrect,        0,     0.35,        1,     0.65)); //fan
 	rectlst.push_back(_setRect(playerrect,      0.3,     0.02,      0.7,     0.15)); //men
-	rectlst.push_back(_setRect(playerrect,      0.1,     0.75,      0.9,     0.45)); //hu
+	rectlst.push_back(hu = _setRect(playerrect,      0.1,     0.6,      0.9,     0.95)); //hu
+	rectlst.push_back(_setRect(hu,                0,        0,     0.49,        1)); //hu left
+	rectlst.push_back(_setRect(hu,             0.51,        0,        1,        1)); //hu right
 	rectlst.push_back(ming = _setRect(playerrect,     0.02,     0.05,     0.25,      0.6)); //ming
 	rectlst.push_back(_setRect(ming,              0,        0,        1,      0.5)); //ming word
 	rectlst.push_back(_setRect(ming,              0,      0.5,        1,        1)); //ming cnt

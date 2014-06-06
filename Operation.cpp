@@ -9,7 +9,7 @@
 // m_ExtraData[0] -- HuType(Bit)
 // m_ExtraData[1] -- HuFinalFan
 //
-//OT_SETDEFHUTYPE:
+//OT_SETHU:
 // Obsolete. Using OT_CHGPLAYERINFO instead.
 //
 //OT_SETSUM:
@@ -25,7 +25,7 @@
 //                 case 4: Set MingGang
 //                 case 5: Set AnGang
 //                 case 6: Set Sum
-//                 case 7: Set DefHuType(Bit)
+//                 case 7: Set Hu(Bit)
 // m_OprData[2] -- Value to change/set
 // m_OprData[3] -- Previous Value
 //
@@ -34,7 +34,10 @@
 //                &7 : MingGang Count
 //                ( &56)>>3 : AnGang Count
 //                ( &64)>>6 : If MenQing
+//               ( &127)>>7 : Hu
 //
+//OT_CHA
+// m_OprData[] -- Value to change[]
 ///////////////////////////////////////////////////
 
 int MainWnd::DoOperation(const Operation &op, bool refresh)
@@ -60,7 +63,7 @@ int MainWnd::DoOperation(const Operation &op, bool refresh)
 				}
 			}
 			break;
-		case Operation::OT_SETDEFHUTYPE:
+		case Operation::OT_SETHU:
 			break;
 		case Operation::OT_SETSUM:
 			break;
@@ -85,6 +88,9 @@ int MainWnd::DoOperation(const Operation &op, bool refresh)
 				case 5:
 					m_PlayersInfo[op.m_OprData[0]].m_AnGangCnt = op.m_OprData[2];
 					break;
+				case 7:
+					m_PlayersInfo[op.m_OprData[0]].m_Hu = op.m_OprData[2];
+					break;
 				default:
 					break;
 				}
@@ -99,9 +105,29 @@ int MainWnd::DoOperation(const Operation &op, bool refresh)
 					m_PlayersInfo[i].m_AnGangCnt = 0;
 					m_PlayersInfo[i].m_MingGangCnt = 0;
 					m_PlayersInfo[i].m_MenQing = 1;
+					m_PlayersInfo[i].m_Hu = 0;
 				}
 				if(refresh){
 					this->Refresh();
+				}
+			}
+			break;
+		case Operation::OT_CHA:
+			{
+				for(int i = 0; i < m_NumPlayers; i++){
+					m_PlayersInfo[i].m_Sum += op.m_OprData[i];
+				}
+				if(refresh)
+					this->Refresh();
+				m_PP->m_ListCtrl_HuRcd.InsertItem(m_PP->m_ListCtrl_HuRcd.GetItemCount(), L"");
+				for(int i = 0; i < m_NumPlayers; i++){
+					CString s;
+					if(op.m_OprData[i] == 0)
+						s = L"";
+					else{
+						s.Format(L"%+d", op.m_OprData[i]);
+					}
+					m_PP->m_ListCtrl_HuRcd.SetItemText(m_PP->m_ListCtrl_HuRcd.GetItemCount()-1, i+1, s);
 				}
 			}
 			break;
@@ -125,7 +151,7 @@ int MainWnd::UndoOperation(const Operation &op, bool refresh)
 				m_PP->m_ListCtrl_HuRcd.DeleteItem(m_PP->m_ListCtrl_HuRcd.GetItemCount() - 1);
 			}
 			break;
-		case Operation::OT_SETDEFHUTYPE:
+		case Operation::OT_SETHU:
 			break;
 		case Operation::OT_SETSUM:
 			break;
@@ -150,6 +176,9 @@ int MainWnd::UndoOperation(const Operation &op, bool refresh)
 				case 5:
 					m_PlayersInfo[op.m_OprData[0]].m_AnGangCnt = op.m_OprData[3];
 					break;
+				case 7:
+					m_PlayersInfo[op.m_OprData[0]].m_Hu = op.m_OprData[3];
+					break;
 				default:
 					break;
 				}
@@ -164,10 +193,21 @@ int MainWnd::UndoOperation(const Operation &op, bool refresh)
 					m_PlayersInfo[i].m_MingGangCnt = op.m_OprData[i] & 7;
 					m_PlayersInfo[i].m_AnGangCnt = (op.m_OprData[i] & 56) >> 3;
 					m_PlayersInfo[i].m_MenQing = (op.m_OprData[i] & 64) >> 6;
+					m_PlayersInfo[i].m_Hu = (op.m_OprData[i] & 16256) >> 7;
 				}
 				if(refresh){
 					this->Refresh();
 				}
+			}
+			break;
+		case Operation::OT_CHA:
+			{
+				for(int i = 0; i < m_NumPlayers; i++){
+					m_PlayersInfo[i].m_Sum -= op.m_OprData[i];
+				}
+				if(refresh)
+					this->Refresh();
+				m_PP->m_ListCtrl_HuRcd.DeleteItem(m_PP->m_ListCtrl_HuRcd.GetItemCount() - 1);
 			}
 			break;
 		default:
@@ -194,20 +234,23 @@ CString MainWnd::AnnounceOperation(const Operation &op)
 						minusloc = i;
 				}
 				if(plusnum == 1 && m_NumPlayers - plusnum - zeronum == 1){
-					str_rt.Format(L"%s 点炮给 %s %s %d 番(%d,%d,%d,%d)", m_PlayersInfo[minusloc].m_Name, m_PlayersInfo[plusloc].m_Name,
-						BIT2STRHU(op.m_ExtraData[0]), op.m_ExtraData[1], op.m_OprData[0], op.m_OprData[1],
-						op.m_OprData[2], op.m_OprData[3]);
+					str_rt.Format(L"%s 点炮给 %s %s %d 番(", m_PlayersInfo[minusloc].m_Name, m_PlayersInfo[plusloc].m_Name,
+						BIT2STRHU(op.m_ExtraData[0]), op.m_ExtraData[1]);			
 				}
 				else if(plusnum == 1 && zeronum == 0){
-					str_rt.Format(L"%s 自摸 %s %d 番(%d,%d,%d,%d)", m_PlayersInfo[plusloc].m_Name, BIT2STRHU(op.m_ExtraData[0]),
-						op.m_ExtraData[1], op.m_OprData[0], op.m_OprData[1], op.m_OprData[2], op.m_OprData[3]);
+					str_rt.Format(L"%s 自摸 %s %d 番(", m_PlayersInfo[plusloc].m_Name, BIT2STRHU(op.m_ExtraData[0]),
+						op.m_ExtraData[1]);
 				}
 				else{
-					str_rt.Format(L"和牌(%d,%d,%d,%d)", op.m_OprData[0], op.m_OprData[1], op.m_OprData[2], op.m_OprData[3]);
+					str_rt.Format(L"和牌(");
 				}
+				for(int i = 0; i < m_NumPlayers; i++){
+					str_rt.Format(L"%s%d,", str_rt, op.m_OprData[i]);
+				}
+				str_rt.SetAt(str_rt.GetLength() - 1, L')');
 			}
 			break;
-		case Operation::OT_SETDEFHUTYPE:
+		case Operation::OT_SETHU:
 			break;
 		case Operation::OT_SETSUM:
 			break;
@@ -239,6 +282,16 @@ CString MainWnd::AnnounceOperation(const Operation &op)
 				case 6:
 					break;
 				case 7:
+					{
+						str_rt += L" 设定默认和牌类型 ";
+						int bithulst[2], numhus;
+						numhus = CheckBitHu(op.m_OprData[2], bithulst);
+						for(int i = 0; i < numhus; i++){
+							str_rt += BIT2STRHU(bithulst[i]);
+							str_rt += L"&";
+						}
+						str_rt.Delete(str_rt.GetLength() - 1, 1);
+					}
 					break;
 				default:
 					break;
@@ -248,6 +301,15 @@ CString MainWnd::AnnounceOperation(const Operation &op)
 		case Operation::OT_NEWGAME:
 			{
 				str_rt = L"设定新局";
+			}
+			break;
+		case Operation::OT_CHA:
+			{
+				str_rt = L"查花猪(";
+				for(int i = 0; i < m_NumPlayers; i++){
+					str_rt.Format(L"%s%d,", str_rt, op.m_OprData[i]);
+				}
+				str_rt.SetAt(str_rt.GetLength() - 1, L')');
 			}
 			break;
 		default:

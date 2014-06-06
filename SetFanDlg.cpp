@@ -36,9 +36,10 @@ void SetFanDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(SetFanDlg, CDialog)
-//	ON_STN_CLICKED(IDC_STATIC2, &SetFanDlg::OnStnClickedStatic2)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BUTTON_HUTYPE_START, IDC_BUTTON_HUTYPE_START+4, OnBnClickedHuType)
-	ON_CONTROL_RANGE(EN_CHANGE, IDC_RICHEDIT_DIANFINALFAN_START, IDC_RICHEDIT_DIANFINALFAN_START+MAXPLAYER, OnEnChangeRichDianFinalFan)
+/////notice: the 3rd parameter of ON_CONTROL_RANGE macro is idLast, which is a CLOSED-boundary,
+/////        so idLast should be decreased by 1 from an open-boundary value
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BUTTON_HUTYPE_START, IDC_BUTTON_HUTYPE_START+3, OnBnClickedHuType)
+	ON_CONTROL_RANGE(EN_CHANGE, IDC_RICHEDIT_DIANFINALFAN_START, IDC_RICHEDIT_DIANFINALFAN_START+MAXPLAYER-1, OnEnChangeRichDianFinalFan)
 	ON_EN_CHANGE(IDC_RICHEDIT_BASEFAN, &SetFanDlg::OnEnChangeRicheditBasefan)
 	ON_EN_CHANGE(IDC_RICHEDIT_APPENDFAN, &SetFanDlg::OnEnChangeRicheditAppendfan)
 	ON_EN_CHANGE(IDC_RICHEDIT_FINALFAN, &SetFanDlg::OnEnChangeRicheditFinalfan)
@@ -139,17 +140,22 @@ BOOL SetFanDlg::OnInitDialog()
 	m_HuAppendFan = 0;
 	if(m_PP->m_PlayersInfo[m_HuPlayer].m_MenQing && m_Zi){
 		str += L"藷ь赻類ㄛ";
-		m_HuAppendFan += 1;
+		m_HuAppendFan += m_PP->m_MenZiFan;
 	}
 	if(m_PP->m_PlayersInfo[m_HuPlayer].m_MingGangCnt > 0){
 		str2.Format(L"%d℅隴話ㄛ", m_PP->m_PlayersInfo[m_HuPlayer].m_MingGangCnt);
 		str += str2;
-		m_HuAppendFan += m_PP->m_PlayersInfo[m_HuPlayer].m_MingGangCnt;
+		m_HuAppendFan += m_PP->m_PlayersInfo[m_HuPlayer].m_MingGangCnt * m_PP->m_MingFan;
 	}
 	if(m_PP->m_PlayersInfo[m_HuPlayer].m_AnGangCnt > 0){
 		str2.Format(L"%d℅做話ㄛ", m_PP->m_PlayersInfo[m_HuPlayer].m_AnGangCnt);
 		str += str2;
-		m_HuAppendFan += m_PP->m_PlayersInfo[m_HuPlayer].m_AnGangCnt * 2;
+		m_HuAppendFan += m_PP->m_PlayersInfo[m_HuPlayer].m_AnGangCnt * m_PP->m_AnFan;
+	}
+	if(m_PP->m_PlusFan != 0){
+		str2.Format(L"睿齪塗俋%+d楓ㄛ", m_PP->m_PlusFan);
+		str += str2;
+		m_HuAppendFan += m_PP->m_PlusFan;
 	}
 	if(m_HuAppendFan > 0){
 		str.Delete(str.GetLength() - 1, 1);
@@ -173,12 +179,12 @@ BOOL SetFanDlg::OnInitDialog()
 		if(m_PP->m_PlayersInfo[i].m_MingGangCnt > 0){
 			str2.Format(L"%d℅隴話ㄛ", m_PP->m_PlayersInfo[i].m_MingGangCnt);
 			str += str2;
-			m_DianAppendFan[i] += m_PP->m_PlayersInfo[i].m_MingGangCnt;
+			m_DianAppendFan[i] += m_PP->m_PlayersInfo[i].m_MingGangCnt * m_PP->m_MingFan;
 		}
 		if(m_PP->m_PlayersInfo[i].m_AnGangCnt > 0){
 			str2.Format(L"%d℅做話ㄛ", m_PP->m_PlayersInfo[i].m_AnGangCnt);
 			str += str2;
-			m_DianAppendFan[i] += 2*m_PP->m_PlayersInfo[i].m_AnGangCnt;
+			m_DianAppendFan[i] += m_PP->m_PlayersInfo[i].m_AnGangCnt * m_PP->m_AnFan;
 		}
 		if(m_DianAppendFan[i] > 0){
 			str.Delete(str.GetLength() -1);
