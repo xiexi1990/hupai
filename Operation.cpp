@@ -244,8 +244,10 @@ CString MainWnd::AnnounceOperation(const Operation &op)
 				else{
 					str_rt.Format(L"∫Õ≈∆(");
 				}
+				CString s2;
 				for(int i = 0; i < m_NumPlayers; i++){
-					str_rt.Format(L"%s%d,", str_rt, op.m_OprData[i]);
+					s2.Format(L"%d,", op.m_OprData[i]);
+					str_rt += s2;
 				}
 				str_rt.SetAt(str_rt.GetLength() - 1, L')');
 			}
@@ -306,8 +308,10 @@ CString MainWnd::AnnounceOperation(const Operation &op)
 		case Operation::OT_CHA:
 			{
 				str_rt = L"≤Èª®÷Ì(";
+				CString s2;
 				for(int i = 0; i < m_NumPlayers; i++){
-					str_rt.Format(L"%s%d,", str_rt, op.m_OprData[i]);
+					s2.Format(L"%d,", op.m_OprData[i]);
+					str_rt += s2;
 				}
 				str_rt.SetAt(str_rt.GetLength() - 1, L')');
 			}

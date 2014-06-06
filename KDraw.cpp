@@ -51,7 +51,7 @@ unsigned int MainWnd::KDraw(void *pp)
 		}
 		
 		entercnt++;
-#if 1
+#if 0
 		{
 			CString s;
 			s.Format(L"Enter KDraw %d !", entercnt);
