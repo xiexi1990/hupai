@@ -85,6 +85,7 @@ public:
 	void Refresh();
 	void NewGame();
 	void Cha();
+	void Reset();
 
 	RecordNode m_CurRcdNode;
 	int GoPrev();

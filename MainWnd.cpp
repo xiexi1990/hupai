@@ -263,6 +263,7 @@ void MainWnd::OnLButtonUp(UINT nFlags, CPoint point)
 	else if(at == 13){
 		m_CurStat.m_FirstClick = -1;
 		Cha();
+		NewGame();
 		return;
 	}
 	else if(at >= 0 && at < this->m_NumPlayers){
@@ -449,6 +450,7 @@ void MainWnd::OnRButtonUp(UINT nFlags, CPoint point)
 	}
 	else if(at == 13){
 		Cha();
+		NewGame();
 		return;
 	}
 	else if(at >= 0 && at < this->m_NumPlayers){
@@ -605,6 +607,32 @@ void MainWnd::NewGame()
 		op.m_OprData[i] |= (m_PlayersInfo[i].m_Hu & 127) << 7;
 	}
 	node.m_OprLst.push_back(op);
+	DoRcdNode(node);
+	this->m_Rcder.PushRcdNode(node);
+	m_PP->RA(AnnounceRcdNode(node));
+}
+
+void MainWnd::Reset()
+{
+	RecordNode node;
+	Operation op;
+	op.m_OprType = Operation::OT_NEWGAME;
+	for(int i = 0; i < m_NumPlayers; i++){
+		op.m_OprData[i] = 0;
+		op.m_OprData[i] |= m_PlayersInfo[i].m_MingGangCnt & 7;
+		op.m_OprData[i] |= (m_PlayersInfo[i].m_AnGangCnt & 7) << 3;
+		op.m_OprData[i] |= (m_PlayersInfo[i].m_MenQing & 1) << 6;
+		op.m_OprData[i] |= (m_PlayersInfo[i].m_Hu & 127) << 7;
+	}
+	node.m_OprLst.push_back(op);
+	op.m_OprType = Operation::OT_CHGPLAYERINFO;
+	for(int i = 0; i < m_NumPlayers; i++){
+		op.m_OprData[0] = i;
+		op.m_OprData[1] = 6;
+		op.m_OprData[2] = 0;
+		op.m_OprData[3] = m_PlayersInfo[i].m_Sum;
+		node.m_OprLst.push_back(op);
+	}
 	DoRcdNode(node);
 	this->m_Rcder.PushRcdNode(node);
 	m_PP->RA(AnnounceRcdNode(node));

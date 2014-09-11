@@ -111,22 +111,24 @@ void MainWnd::OnPaint()
 					}
 					m_dcmPreDraw.SetROP2(oldrop2);
 				}
-				if(m_CurStat.m_InnerAt == 0){
-					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
-				}
-				if(m_CurStat.m_InnerAt == 1){  ///ming gang
-					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
-					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect, -m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect.Width()*0.4, 0xff8000, 0xffe0c0);
-					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect, m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect.Width()*0.1, 0xff8000, 0xffe0c0);
-				}
-				else if(m_CurStat.m_InnerAt == 2){  ///an gang
-					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
-					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect, -m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect.Width()*0.4, 0xff8000, 0xffe0c0);
-					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect.Width()*0.1, 0xff8000, 0xffe0c0);
-				}
-				else if(m_CurStat.m_InnerAt == 3){  ///men qing
-					DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
-					DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MenRect, -m_PlayersInfo[m_CurStat.m_At].m_MenRect.Width()*0.2, 0xff8000, 0xffe0c0);
+				else{
+					if(m_CurStat.m_InnerAt == 0 || m_CurStat.m_InnerAt == 4 || m_CurStat.m_InnerAt == 5 || m_CurStat.m_InnerAt == 6){
+						DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
+					}
+					if(m_CurStat.m_InnerAt == 1){  ///ming gang
+						DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect, -m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect.Width()*0.4, 0xff8000, 0xffe0c0);
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect, m_PlayersInfo[m_CurStat.m_At].m_MingGangWrdRect.Width()*0.1, 0xff8000, 0xffe0c0);
+					}
+					else if(m_CurStat.m_InnerAt == 2){  ///an gang
+						DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect, -m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect.Width()*0.4, 0xff8000, 0xffe0c0);
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect, m_PlayersInfo[m_CurStat.m_At].m_AnGangWrdRect.Width()*0.1, 0xff8000, 0xffe0c0);
+					}
+					else if(m_CurStat.m_InnerAt == 3){  ///men qing
+						DrawGradFrame(&m_dcmPreDraw, this->m_PlayersInfo[m_CurStat.m_At].m_WholeRect, m_PlayersInfo[m_CurStat.m_At].m_WholeRect.Width()*0.1, 0xffff00, 0xfffff0);
+						DrawGradFrame(&m_dcmPreDraw, m_PlayersInfo[m_CurStat.m_At].m_MenRect, -m_PlayersInfo[m_CurStat.m_At].m_MenRect.Width()*0.2, 0xff8000, 0xffe0c0);
+					}
 				}
 			}
 		}

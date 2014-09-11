@@ -32,6 +32,8 @@
 #define IDC_CHECK_FASTSETMAIN           1020
 #define IDC_RICHEDIT_NAME               1021
 #define IDC_STATIC_TIP1                 1022
+#define IDC_BUTTON1                     1023
+#define IDC_BUTTON_RESET                1023
 
 // Next default values for new objects
 // 
@@ -39,7 +41,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1023
+#define _APS_NEXT_CONTROL_VALUE         1024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

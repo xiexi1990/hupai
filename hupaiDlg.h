@@ -45,4 +45,5 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CListCtrl m_ListCtrl_HuRcd;
 	CRichEditCtrl m_RichEdit_MsgRcd;
+	afx_msg void OnBnClickedButtonReset();
 };

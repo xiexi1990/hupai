@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(ChupaiDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_CHECK_FASTSETMAIN, &ChupaiDlg::OnBnClickedCheckFastsetmain)
+	ON_BN_CLICKED(IDC_BUTTON_RESET, &ChupaiDlg::OnBnClickedButtonReset)
 END_MESSAGE_MAP()
 
 
@@ -70,13 +71,15 @@ BOOL ChupaiDlg::OnInitDialog()
 		forward.Create(L"forward", WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, r, this, 11111);
 #endif
 	{
-		m_ListCtrl_HuRcd.SetExtendedStyle(m_ListCtrl_HuRcd.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	//	m_ListCtrl_HuRcd.SetExtendedStyle(m_ListCtrl_HuRcd.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+		m_ListCtrl_HuRcd.SetExtendedStyle(m_ListCtrl_HuRcd.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
 		CRect r;
 		this->m_ListCtrl_HuRcd.GetClientRect(&r);
 		m_ListCtrl_HuRcd.InsertColumn(0, L"", 0, 0);
 		for(int i = 0; i < m_pMainWnd->m_NumPlayers; i++){
 			m_ListCtrl_HuRcd.InsertColumn(i+1, m_pMainWnd->m_PlayersInfo[i].m_Name, LVCFMT_CENTER, r.Width()/m_pMainWnd->m_NumPlayers);
 		}
+	//	m_ListCtrl_HuRcd.DeleteColumn(0);
 	}
 
 	m_Inited = 1;
@@ -142,6 +145,7 @@ void ChupaiDlg::_GetLayout(const CRect& whole, RECTARR& rectlst, INTARR& idlst)
 	idlst.push_back(IDC_RICHEDIT_NUMPLAYERS);
 	idlst.push_back(IDC_BUTTON_SET);
 	idlst.push_back(IDC_STATIC_TIP1);
+	idlst.push_back(IDC_BUTTON_RESET);
 	idlst.push_back(IDC_CHECK_FASTSETMAIN);
 	idlst.push_back(IDC_STATIC_HURCD);
 	idlst.push_back(IDC_LISTCTRL_HURCD);
@@ -180,6 +184,11 @@ void ChupaiDlg::_GetLayout(const CRect& whole, RECTARR& rectlst)
 	tmp.right = ir.right;
 	tmp.bottom = tmp.top + 14;
 	rectlst.push_back(tmp); /// IDC_STATIC_TIP1
+
+	tmp.top = tmp.bottom + 2;
+	tmp.right = tmp.left + 80;
+	tmp.bottom = tmp.top + 40;
+	rectlst.push_back(tmp); /// IDC_BUTTON_RESET
 	//// } tmp
 
 
@@ -272,6 +281,39 @@ BOOL ChupaiDlg::PreTranslateMessage(MSG* pMsg)
 			}
 			else if(pMsg->wParam == 'C'){
 				m_pMainWnd->Cha();
+				m_pMainWnd->NewGame();
+			}
+		//	else if(pMsg->wParam == 'H' || pMsg->wParam == 'M' || pMsg->wParam == 'A' || pMsg->wParam == 'Q'){
+			else if(pMsg->wParam == 'H'){
+				if(m_pMainWnd->m_CurStat.m_At >= 0 && m_pMainWnd->m_CurStat.m_At < m_pMainWnd->m_NumPlayers){
+					RecordNode node;
+					Operation op;
+					op.m_OprType = Operation::OT_CHGPLAYERINFO;
+					op.m_OprData[0] = m_pMainWnd->m_CurStat.m_At;
+					if(pMsg->wParam == 'H'){
+						op.m_OprData[1] = 7;
+						int newhu;
+						switch(m_pMainWnd->m_PlayersInfo[m_pMainWnd->m_CurStat.m_At].m_Hu){
+						case 0: newhu = BASEHU; break;
+						case BASEHU: newhu = PENGHU; break;
+						case PENGHU: newhu = QINGHU; break;
+						case QINGHU: newhu = QINGPENGHU; break;
+						case QINGPENGHU: newhu = 0; break;
+						default: goto __ret; break;
+
+						}
+						op.m_OprData[2] = newhu;
+						op.m_OprData[3] = m_pMainWnd->m_PlayersInfo[m_pMainWnd->m_CurStat.m_At].m_Hu;
+					}
+					else if(pMsg->wParam == 'M'){
+						op.m_OprData[1] = 1;
+
+					}
+					node.m_OprLst.push_back(op);
+					m_pMainWnd->DoRcdNode(node, 1);
+					m_pMainWnd->m_Rcder.PushRcdNode(node);
+					RA(m_pMainWnd->AnnounceRcdNode(node));
+				}
 			}
 		}
 	}
@@ -283,6 +325,7 @@ BOOL ChupaiDlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
+__ret:
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
@@ -296,4 +339,9 @@ void ChupaiDlg::RA(const CString &str, int nlf)
 	}
 	m_RichEdit_MsgRcd.SetWindowTextW(s);
 	m_RichEdit_MsgRcd.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
+}
+void ChupaiDlg::OnBnClickedButtonReset()
+{
+	// TODO: Add your control notification handler code here
+	this->m_pMainWnd->Reset();
 }

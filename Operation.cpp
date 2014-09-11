@@ -60,6 +60,7 @@ int MainWnd::DoOperation(const Operation &op, bool refresh)
 						s.Format(L"%+d", op.m_OprData[i]);
 					}
 					m_PP->m_ListCtrl_HuRcd.SetItemText(m_PP->m_ListCtrl_HuRcd.GetItemCount()-1, i+1, s);
+					m_PP->m_ListCtrl_HuRcd.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
 				}
 			}
 			break;
@@ -87,6 +88,9 @@ int MainWnd::DoOperation(const Operation &op, bool refresh)
 					break;
 				case 5:
 					m_PlayersInfo[op.m_OprData[0]].m_AnGangCnt = op.m_OprData[2];
+					break;
+				case 6:
+					m_PlayersInfo[op.m_OprData[0]].m_Sum = op.m_OprData[2];
 					break;
 				case 7:
 					m_PlayersInfo[op.m_OprData[0]].m_Hu = op.m_OprData[2];
@@ -128,6 +132,8 @@ int MainWnd::DoOperation(const Operation &op, bool refresh)
 						s.Format(L"%+d", op.m_OprData[i]);
 					}
 					m_PP->m_ListCtrl_HuRcd.SetItemText(m_PP->m_ListCtrl_HuRcd.GetItemCount()-1, i+1, s);
+					m_PP->m_ListCtrl_HuRcd.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
+
 				}
 			}
 			break;
@@ -175,6 +181,9 @@ int MainWnd::UndoOperation(const Operation &op, bool refresh)
 					break;
 				case 5:
 					m_PlayersInfo[op.m_OprData[0]].m_AnGangCnt = op.m_OprData[3];
+					break;
+				case 6:
+					m_PlayersInfo[op.m_OprData[0]].m_Sum = op.m_OprData[3];
 					break;
 				case 7:
 					m_PlayersInfo[op.m_OprData[0]].m_Hu = op.m_OprData[3];
@@ -282,6 +291,7 @@ CString MainWnd::AnnounceOperation(const Operation &op)
 					str_rt.Format(L"%s 设定暗杠数 %d", str_rt, op.m_OprData[2]);
 					break;
 				case 6:
+					str_rt.Format(L"%s 设定分数 %d", str_rt, op.m_OprData[2]);
 					break;
 				case 7:
 					{

@@ -71,9 +71,10 @@ int MainWnd::DivWhole(const CRect &whole, int num, RECTARR &rectlst)
 		////6th rect: go next
 		rectlst.push_back(_setRect(whole, 0.79, 0.11, 0.99, 0.2));
 		////7th rect: newgame
-		rectlst.push_back(_setRect(whole, 0.01, 0.01, 0.21, 0.1));
+		rectlst.push_back(_setRect(whole, 0.01, 0.01, 0.31, 0.1));
 		////8th rect: cha
-		rectlst.push_back(_setRect(whole, 0.01, 0.11, 0.21, 0.2));
+		rectlst.push_back(_setRect(whole, 0.01, 0.11, 0.31, 0.2));
+		
 	}
 	return 0;
 }

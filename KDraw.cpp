@@ -129,8 +129,8 @@ unsigned int MainWnd::KDraw(void *pp)
 		deffont = PP->m_dcmDraw1.SelectObject(&font);
 		PP->m_dcmDraw1.DrawText(L"撤销Ctrl+Z", &goprevrect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
 		PP->m_dcmDraw1.DrawText(L"重复Ctrl+Y", &gonextrect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
-		PP->m_dcmDraw1.DrawText(L"新局 N", &newgamerect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
-		PP->m_dcmDraw1.DrawText(L"查花猪 C", &charect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
+		PP->m_dcmDraw1.DrawText(L"新局(不查) N", &newgamerect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
+		PP->m_dcmDraw1.DrawText(L"新局+查花猪 C", &charect, DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_NOCLIP);
 		PP->m_dcmDraw1.SelectObject(deffont);
 		font.DeleteObject();
 
